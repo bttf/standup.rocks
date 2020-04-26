@@ -5,6 +5,7 @@
   "author": "bttf",
   "license": "MIT",
   "scripts": {
+    "create:migration": "db-migrate create --config config/database.json",
     "migrate": "db-migrate up --config config/database.json",
     "start": "yarn migrate && node dist",
     "build": "babel ./src --out-dir dist",
