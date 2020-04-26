@@ -1,0 +1,32 @@
+version: '3'
+services:
+  api:
+    build: api
+    command: yarn dev
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    volumes:
+      - ./api:/user/src/app
+      - /user/src/app/node_modules
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: standup-rocks-dev
+      PGPASSWORD: postgres
+      PGPORT: "5432"
+      AUTH_SECRET: "m0n4l!s4"
+      GOOGLE_CLIENT_ID: "$STANDUP_ROCKS_GOOGLE_CLIENT_ID"
+      GOOGLE_CLIENT_SECRET: "$STANDUP_ROCKS_CLIENT_SECRET"
+      GOOGLE_CALLBACK_URL: "http://localhost:8080/google"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: standup-rocks-dev
+    ports:
+      - '15432:5432'
