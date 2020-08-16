@@ -1,0 +1,11 @@
+{
+  "development": {
+    "driver": "pg",
+    "host": {"ENV": "PGHOST"},
+    "user": {"ENV": "PGUSER"},
+    "password": {"ENV": "PGPASSWORD"},
+    "database": {"ENV": "PGDATABASE"},
+    "port": {"ENV": "PGPORT"},
+    "native": true
+  }
+}

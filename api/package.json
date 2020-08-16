@@ -1,0 +1,32 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "create:migration": "db-migrate create --config config/database.json",
+    "migrate": "db-migrate up --config config/database.json",
+    "start": "yarn migrate && node dist",
+    "build": "babel ./src --out-dir dist",
+    "dev": "nodemon --watch src -e js --exec \"yarn debug\"",
+    "debug": "yarn migrate && yarn babel-node -r dotenv/config --inspect=0.0.0.0:9229 src"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^9.4.0",
+    "db-migrate": "^0.11.11",
+    "db-migrate-pg": "^1.2.2",
+    "koa": "^2.13.0",
+    "pg": "^8.3.0",
+    "pg-native": "^3.0.0",
+    "sequelize": "^6.3.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.7.0",
+    "nodemon": "^2.0.4"
+  }
+}
