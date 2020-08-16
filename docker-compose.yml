@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    build: api
+    command: yarn dev
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    volumes:
+      - ./api:/user/src/app
+      - node_modules:/user/src/app/node_modules
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: standup
+      PGPASSWORD: standup
+      PGPORT: "5432"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: standup
+      POSTGRES_USER: postgres
+      POSTGRES_DB: standup
+    ports:
+      - '15432:5432'
