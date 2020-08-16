@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "standup.rocks",
+  "author": "bttf",
+  "version": "0.0.1",
+  "description": "Run standup efficiently and effectively",
+  "icons": {
+    "16": "16.png",
+    "48": "48.png",
+    "128": "128.png"
+  },
+  "permissions": ["storage"],
+  "sidebar_action": {
+    "default_title": "Some sidebar",
+    "default_panel": "index.html",
+    "default_icon": "sidebar.png"
+  }
+}
+
