@@ -26,7 +26,7 @@
     "koa-static": "^5.0.0",
     "pg": "^8.3.0",
     "pg-native": "^3.0.0",
-    "sequelize": "^6.3.4"
+    "sequelize": "^5.22.3"
   },
   "devDependencies": {
     "eslint": "^7.7.0",
