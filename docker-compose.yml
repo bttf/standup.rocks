@@ -12,6 +12,7 @@ services:
     depends_on:
       - db
     environment:
+      NODE_ENV: development
       PORT: 3000
       PGHOST: db
       PGUSER: postgres
