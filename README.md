@@ -6,10 +6,6 @@ A google chrome extension that helps you manage your standup meetings
 
 A nodejs application
 
-## plugin
+## frontend
 
-A browser plugin
-
-## website
-
-Website hosted on standup.rocks
+React app

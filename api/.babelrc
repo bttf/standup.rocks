@@ -1,5 +1,13 @@
 {
-  "plugins": ["@babel/plugin-proposal-object-rest-spread"],
+  "plugins": [
+    "@babel/plugin-proposal-object-rest-spread",
+    ["module-resolver", {
+      "root": ["."],
+      "alias": {
+        "src": "./src"
+      }
+    }]
+  ],
   "presets": [
     ["@babel/preset-env", {
       "targets": {
