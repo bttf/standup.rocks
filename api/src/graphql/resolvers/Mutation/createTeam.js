@@ -20,6 +20,10 @@ async function createTeamMutation(_, args, context) {
     password
   } = args;
 
+  if (!name) {
+    return { errors: ['Name must be provided'] };
+  }
+
   const existingTeam = await db.Team.findOne({
     where: {
       name
@@ -27,7 +31,7 @@ async function createTeamMutation(_, args, context) {
   });
 
   if (existingTeam) {
-    return { errors: ['Team name has been taken'] };
+    return { errors: ['Team name is taken'] };
   }
 
   // generate code
