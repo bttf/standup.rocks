@@ -19,8 +19,9 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      current_facilitator_idx: {
+      currentFacilitatorIdx: {
         type: DataTypes.INTEGER,
+        field: 'current_facilitator_idx',
       },
       code: {
         type: DataTypes.STRING,
@@ -35,7 +36,13 @@ export default (sequelize, DataTypes) => {
   );
 
   Team.associate = models => {
-    const {TeamSettings} = models;
+    const {Facilitator, TeamSettings} = models;
+
+    Team.Facilitators = Team.hasMany(Facilitator, {
+      foreignKey: 'team_id',
+      as: 'facilitators',
+    });
+
     Team.TeamSettings = Team.hasOne(TeamSettings, {
       foreignKey: 'team_id',
       as: 'teamSettings',

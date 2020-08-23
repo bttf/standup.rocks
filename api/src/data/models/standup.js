@@ -1,6 +1,6 @@
 export default (sequelize, DataTypes) => {
-  const Facilitator = sequelize.define(
-    'Facilitator',
+  const Standup = sequelize.define(
+    'Standup',
     {
       uuid: {type: DataTypes.STRING, field: 'uuid'},
       createdAt: {
@@ -15,35 +15,32 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         field: 'deleted_at',
       },
-      name: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      idx: {
-        type: DataTypes.INTEGER,
+      runDate: {
+        type: DataTypes.DATE,
+        field: 'run_date',
         allowNull: false,
       },
     },
     {
       schema: 'v1',
-      tableName: 'facilitators',
+      tableName: 'standups',
       timestamps: true,
     },
   );
 
-  Facilitator.associate = models => {
-    const {Absentee, Team} = models;
+  Standup.associate = models => {
+    const {Facilitator, Team} = models;
 
-    Facilitator.Absentee = Facilitator.hasOne(Absentee, {
+    Standup.Facilitator = Standup.belongsTo(Facilitator, {
       foreignKey: 'facilitator_id',
-      as: 'absentee',
+      as: 'faciliator',
     });
 
-    Facilitator.Team = Facilitator.belongsTo(Team, {
+    Standup.Team = Standup.belongsTo(Team, {
       foreignKey: 'team_id',
       as: 'team',
     });
   };
 
-  return Facilitator;
+  return Standup;
 };
