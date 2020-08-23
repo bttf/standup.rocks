@@ -10,12 +10,6 @@ const router = new Router();
 
 app.use(cors());
 
-router.get('/', ctx => {
-  ctx.body = 'hi';
-});
-
-app.use(router.routes());
-
 graphqlServer.applyMiddleware({app, path: '/graphql'});
 
 app.listen({port: PORT}, () => console.log(`Listening on port ${PORT}`));
