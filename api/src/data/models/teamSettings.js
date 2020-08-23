@@ -21,10 +21,6 @@ export default (sequelize, DataTypes) => {
       links: {
         type: DataTypes.JSON,
       },
-      code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
     },
     {
       schema: 'v1',

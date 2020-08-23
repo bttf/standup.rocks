@@ -1,4 +1,4 @@
 import QueryTypeDefs from './Query';
-// import MutationTypeDefs from './Mutation';
+import MutationTypeDefs from './Mutation';
 
-export default [QueryTypeDefs];
+export default [QueryTypeDefs, MutationTypeDefs];
