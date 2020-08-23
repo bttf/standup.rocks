@@ -18,7 +18,6 @@ const CREATE_TEAM_GQL = gql`
 export default () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
   const [errors, setErrors] = useState('');
 
   const [createTeamM] = useMutation(CREATE_TEAM_GQL, {
@@ -39,14 +38,11 @@ export default () => {
   });
 
   const createTeam = () => {
-    setIsCreating(true);
     return createTeamM({
       variables: {
         name,
         password: password ? password : undefined,
       },
-    }).finally(() => {
-      setIsCreating(false);
     });
   };
 
@@ -103,7 +99,11 @@ export default () => {
           justifyContent="center"
         >
           <Heading size={800}>
-            🎉 standup.rocks
+            <span role="img" aria-label="Tada">
+              🎉
+            </span>
+            {' '}
+             standup.rocks
           </Heading>
         </Pane>
       </Pane>
