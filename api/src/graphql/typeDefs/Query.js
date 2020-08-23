@@ -13,11 +13,19 @@ export default gql`
     team: Team!
   }
 
+  type Standup {
+    runDate: String!
+    facilitator: Facilitator!
+    team: Team!
+  }
+
   type Team {
     name: String!
     code: String!
     facilitators: [Facilitator!]!
     absentees: [Absentee!]!
+    standupOnDate(date: String!): Standup
+    standups: [Standup!]!
   }
 
   type TeamLink {

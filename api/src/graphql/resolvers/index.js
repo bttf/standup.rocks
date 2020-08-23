@@ -1,7 +1,15 @@
 import Query from './Query';
 import Mutation from './Mutation';
-// import User from './Query/User';
-// import Bullet from './Query/Bullet';
+import Absentee from './Query/Absentee';
+import Facilitator from './Query/Facilitator';
+import Standup from './Query/Standup';
+import Team from './Query/Team';
 
-export default {Query, Mutation};
-// export default {Query, Mutation, User, Bullet};
+export default {
+  Query,
+  Mutation,
+  Absentee,
+  Facilitator,
+  Standup,
+  Team,
+};
