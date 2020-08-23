@@ -67,14 +67,16 @@ export default () => {
             width={200}
           />
 
-          <TextInputField
-            label="Password (optional)"
-            type="password"
-            hint="To prevent unwanted visitors"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            width={200}
-          />
+          {false && (
+            <TextInputField
+              label="Password (optional)"
+              type="password"
+              hint="To prevent unwanted visitors"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              width={200}
+            />
+          )}
 
           <Button
             appearance="primary"
