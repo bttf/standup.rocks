@@ -4,15 +4,11 @@ import { Pane, Paragraph } from 'evergreen-ui';
 import './Clock.css';
 
 export default () => {
-  const [digits, setDigits] = useState('');
-
-  function tick() {
-    setDigits(format(new Date(), 'HH:mm:ss:SSS'));
-  }
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    setInterval(tick, 5);
-  }, []);
+    setTimeout(() => setTick((tick + 1) % 2), 1000);
+  }, [tick]);
 
   return (
     <Pane className="clock-container">
@@ -20,7 +16,9 @@ export default () => {
         {format(new Date(), 'qqq yyyy')} - {format(new Date(), 'MMM do')}
       </div>
       <div className="clock">
-        {digits}
+        <span>{format(new Date(), 'hh')}</span>
+        <span style={{ visibility: tick === 0 ? 'hidden' : 'visible' }}>:</span>
+        <span>{format(new Date(), 'mm a')}</span>
       </div>
     </Pane>
   );

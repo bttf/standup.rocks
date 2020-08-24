@@ -2,7 +2,7 @@ import db from 'src/data';
 
 export default {
   facilitators(team, _args, _context) {
-    return db.Faciliator.findAll({
+    return db.Facilitator.findAll({
       where: {
         team_id: team.id
       }
@@ -12,7 +12,8 @@ export default {
     return db.Absentee.findAll({
       where: {
         team_id: team.id
-      }
+      },
+      order: [['createdAt', 'asc']],
     });
   },
   standupOnDate(team, args, _context) {
