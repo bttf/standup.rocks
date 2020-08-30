@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery, useMutation} from '@apollo/react-hooks';
 import {gql} from 'apollo-boost';
 import { Button, Heading, majorScale, Pane, TextInputField } from 'evergreen-ui';
 import TopNav from './TopNav';
@@ -15,6 +15,7 @@ const _userName = window.localStorage.getItem('username');
 const ALL_FACILITATORS_GQL = gql`
   query AllFacilitators($teamCode: String!) {
     findTeam(code: $teamCode) {
+      uuid
       facilitators {
         name
       }
@@ -23,6 +24,24 @@ const ALL_FACILITATORS_GQL = gql`
           name
         }
       }
+    }
+  }
+`;
+
+const CREATE_FACILITATOR_GQL = gql`
+  mutation CreateFacilitator(
+    $name: String!
+    $teamUuid: String!
+  ) {
+    createFacilitator(
+      name: $name
+      teamUuid: $teamUuid
+    ) {
+      createdFacilitator {
+        name
+        index
+      }
+      errors
     }
   }
 `;
@@ -41,8 +60,39 @@ export default ({ match }) => {
   } = useQuery(ALL_FACILITATORS_GQL, {
     variables: { teamCode },
   });
-  const facilitators = allFacilitatorsRes ? allFacilitatorsRes.findTeam.facilitators : null;
-  const absentees = allFacilitatorsRes ? allFacilitatorsRes.findTeam.absentees: null;
+  const [createFacilitatorM] = useMutation(CREATE_FACILITATOR_GQL, {
+    update(cache, { data: { createFacilitator: { createdFacilitator: facilitator } } }) {
+      const { findTeam } = cache.readQuery({
+        query: ALL_FACILITATORS_GQL,
+        variables: { teamCode },
+      });
+
+      cache.writeQuery({
+        query: ALL_FACILITATORS_GQL,
+        variables: { teamCode },
+        data: {
+          findTeam: {
+            ...findTeam,
+            facilitators: [
+              ...(findTeam.facilitators || []),
+              facilitator,
+            ],
+          },
+        },
+      });
+    }
+  });
+  const createFacilitator = (name, teamUuid) => {
+    return createFacilitatorM({
+      variables: {
+        name,
+        teamUuid,
+      }
+    });
+  };
+  const team = allFacilitatorsRes ? allFacilitatorsRes.findTeam : null;
+  const facilitators = allFacilitatorsRes ? allFacilitatorsRes.findTeam.facilitators : [];
+  const absentees = allFacilitatorsRes ? allFacilitatorsRes.findTeam.absentees: [];
 
   function storeUserName() {
     window.localStorage.setItem('username', userName);
@@ -90,6 +140,8 @@ export default ({ match }) => {
         </Pane>
       </div>
       <EditFacilitatorsModal
+        facilitators={facilitators}
+        createFacilitator={name => createFacilitator(name, team.uuid)}
         showEditFacilitators={showEditFacilitators}
         setShowEditFacilitators={setShowEditFacilitators}
       />

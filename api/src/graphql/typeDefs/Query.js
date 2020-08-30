@@ -2,6 +2,7 @@ import {gql} from 'apollo-server-koa';
 
 export default gql`
   type Facilitator {
+    uuid: String!
     index: Int!
     name: String!
     team: Team!
@@ -14,12 +15,14 @@ export default gql`
   }
 
   type Standup {
+    uuid: String!
     runDate: String!
     facilitator: Facilitator!
     team: Team!
   }
 
   type Team {
+    uuid: String!
     name: String!
     code: String!
     facilitators: [Facilitator!]!
