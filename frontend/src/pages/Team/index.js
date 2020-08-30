@@ -7,6 +7,7 @@ import Clock from './Clock';
 import Facilitators from './Facilitators';
 import Links from './Links';
 import EditFacilitatorsModal from './EditFacilitatorsModal'
+import EnterUserNamePrompt from './EnterUserNamePrompt';
 import './Team.css';
 
 const _userName = window.localStorage.getItem('username');
@@ -50,27 +51,11 @@ export default ({ match }) => {
 
   if (!hasUserName) {
     return (
-      <Pane
-        border="muted"
-        elevation={1}
-        padding={majorScale(4)}
-      >
-        <Heading size={800} marginBottom={majorScale(2)}>
-          Enter your name
-        </Heading>
-
-        <TextInputField
-          label="Name"
-          placeholder="First name preferably"
-          value={userName}
-          onChange={e => setUserName(e.target.value)}
-          width={200}
-        />
-
-        <Button appearance="primary" onClick={storeUserName}>
-          Done
-        </Button>
-      </Pane>
+      <EnterUserNamePrompt
+        userName={userName}
+        setUserName={setUserName}
+        storeUserName={storeUserName}
+      />
     );
   }
 
@@ -85,17 +70,23 @@ export default ({ match }) => {
           marginY={0}
           display="flex"
           flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
         >
           <Clock />
-          <Facilitators
-            isLoading={allFacilitatorsLoading}
-            absentees={absentees}
-            facilitators={facilitators}
-            setShowEditFacilitators={setShowEditFacilitators}
-          />
-          <Links />
+          <Pane
+            marginY={majorScale(2)}
+          >
+            <Facilitators
+              isLoading={allFacilitatorsLoading}
+              absentees={absentees}
+              facilitators={facilitators}
+              setShowEditFacilitators={setShowEditFacilitators}
+            />
+          </Pane>
+          <Pane
+            marginY={majorScale(2)}
+          >
+            <Links />
+          </Pane>
         </Pane>
       </div>
       <EditFacilitatorsModal
