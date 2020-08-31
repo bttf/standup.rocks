@@ -1,10 +1,10 @@
 import React from 'react';
-import { CogIcon, DuplicateIcon, majorScale, minorScale, Pane, Text, TextInput, toaster } from 'evergreen-ui';
+import { CogIcon, DuplicateIcon, majorScale, Menu, minorScale, Pane, Popover, Text, TextInput, toaster } from 'evergreen-ui';
 import './TopNav.css';
 
 const NODE_ENV = process.env;
 
-export default ({ code }) => {
+export default ({ code, setShowEditFacilitators }) => {
   const host = NODE_ENV === 'production' ?
     'https://standup.rocks' : 'http://localhost:3001';
 
@@ -50,12 +50,23 @@ export default ({ code }) => {
         </Pane>
       </div>
 
-      {/* TODO Implement team settings */}
-      {false && (
-        <div className="team-settings">
-          <CogIcon color="muted" size={20} marginRight={majorScale(1)} />
-        </div>
-      )}
+      <div className="team-settings">
+        <Popover
+          content={
+            <Menu>
+              <Menu.Group>
+                <Menu.Item
+                  onSelect={() => setShowEditFacilitators(true)}
+                >
+                  Edit facilitators
+                </Menu.Item>
+              </Menu.Group>
+            </Menu>
+          }
+        >
+          <CogIcon color="muted" size={20} marginRight={majorScale(1)} cursor="pointer" />
+        </Popover>
+      </div>
     </Pane>
   );
 };

@@ -4,6 +4,7 @@ import createFacilitator from './createFacilitator';
 import createStandup from './createStandup';
 import setFacilitatorOrder from './setFacilitatorOrder';
 import deleteFacilitator from './deleteFacilitator';
+import bumpCurrentFacilitatorIndex from './bumpCurrentFacilitatorIndex';
 
 export default {
   createTeam,
@@ -12,4 +13,5 @@ export default {
   createStandup,
   setFacilitatorOrder,
   deleteFacilitator,
+  bumpCurrentFacilitatorIndex,
 };

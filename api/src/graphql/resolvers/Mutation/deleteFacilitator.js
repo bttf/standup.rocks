@@ -12,8 +12,6 @@ async function deleteFacilitatorMutation(_, args, context) {
     returning: true
   });
 
-  console.log('DEBUG facilitator', facilitator);
-
   return { deletedFacilitator: facilitator };
 }
 
