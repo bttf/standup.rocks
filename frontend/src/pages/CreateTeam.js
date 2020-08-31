@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { Alert, Button, Heading, majorScale, Pane, TextInputField } from 'evergreen-ui';
+import { Alert, Button, Heading, majorScale, Pane, TextInputField, UnorderedList, ListItem, Text, Link } from 'evergreen-ui';
+import { LOCAL_STORAGE_RECENT_TEAMS } from '../lib/constants';
 import './CreateTeam.css';
 
 const CREATE_TEAM_GQL = gql`
@@ -15,13 +16,24 @@ const CREATE_TEAM_GQL = gql`
   }
 `;
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 export default () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState('');
+  const recentTeamsBlob = window.localStorage.getItem(LOCAL_STORAGE_RECENT_TEAMS);
+  const [recentTeams, setRecentTeams] = useState(recentTeamsBlob ? JSON.parse(recentTeamsBlob) : []);
 
-  const [createTeamM] = useMutation(CREATE_TEAM_GQL, {
-    onCompleted(data) {
+  const [createTeamM] = useMutation(CREATE_TEAM_GQL);
+
+  const createTeam = async () => {
+    const { data }= await createTeamM({
+      variables: {
+        name,
+        password: password ? password : undefined,
+      },
+    });
       const { createdTeam, errors } = data.createTeam || {};
 
       if (errors && errors.length) {
@@ -33,17 +45,22 @@ export default () => {
 
       const { code } = createdTeam;
 
-      window.location.href = `/${code}`;
-    },
-  });
+    // Set recently created teams in local storage
+    try {
+      const newRecentTeams = [
+        ...recentTeams,
+        {
+          name,
+          code,
+        }
+      ];
+      window.localStorage.setItem('recent-teams-created', JSON.stringify(newRecentTeams));
+      setRecentTeams(newRecentTeams);
+    } catch(e) {
+      console.log('Error', e);
+    }
 
-  const createTeam = () => {
-    return createTeamM({
-      variables: {
-        name,
-        password: password ? password : undefined,
-      },
-    });
+    window.location.href = `/${code}`;
   };
 
   return (
@@ -109,6 +126,28 @@ export default () => {
           </Heading>
         </Pane>
       </Pane>
+      {recentTeams.length && (
+        <Pane
+          border="muted"
+          width={600}
+          padding={majorScale(4)}
+        >
+          Recently created:
+          <UnorderedList>
+            {recentTeams.map(({
+              code,
+              name,
+            }) => (
+              <ListItem>
+                <Text>{name} - </Text>
+                <Link
+                  href={isDevelopment ? `http://localhost:3001/${code}` : `https://standup.rocks/${code}`}
+                >{isDevelopment ? `http://localhost:3001/${code}` : `https://standup.rocks/${code}`}</Link>
+              </ListItem>
+            ))}
+          </UnorderedList>
+        </Pane>
+      )}
     </div>
   );
 }
