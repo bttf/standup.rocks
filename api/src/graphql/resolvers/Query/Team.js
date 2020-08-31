@@ -1,12 +1,22 @@
 import db from 'src/data';
+import { keyBy, range } from 'lodash';
 
 export default {
-  facilitators(team, _args, _context) {
-    return db.Facilitator.findAll({
+  async facilitators(team, _args, _context) {
+    const currIdx = team.currentFacilitatorIdx;
+    const facilitators = await db.Facilitator.findAll({
       where: {
         team_id: team.id
       }
     });
+
+    if (!facilitators || !facilitators.length) return [];
+
+    const facilitatorsByIndex = keyBy(facilitators, 'idx');
+
+    return range(facilitators.length)
+      .map(i => (i + currIdx) % facilitators.length)
+      .map(i => facilitatorsByIndex[parseInt(i, 10)]);
   },
   absentees(team, _args, _context) {
     return db.Absentee.findAll({
