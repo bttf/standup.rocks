@@ -40,6 +40,7 @@ const CREATE_FACILITATOR_GQL = gql`
       teamUuid: $teamUuid
     ) {
       createdFacilitator {
+        uuid
         name
         index
       }

@@ -1,6 +1,8 @@
 import {gql} from 'apollo-server-koa';
 
 export default gql`
+  scalar JSON
+
   type Facilitator {
     uuid: String!
     index: Int!
@@ -29,16 +31,11 @@ export default gql`
     absentees: [Absentee!]!
     standupOnDate(date: String!): Standup
     standups: [Standup!]!
-  }
-
-  type TeamLink {
-    name: String!
-    logoUrl: String
-    url: String!
+    settings: TeamSettings!
   }
 
   type TeamSettings {
-    links: [TeamLink!]!
+    links: JSON
   }
 
 

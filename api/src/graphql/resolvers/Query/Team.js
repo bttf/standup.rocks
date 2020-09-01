@@ -31,6 +31,7 @@ export default {
     return db.Standup.findOne({
       where: {
         runDate: date,
+        team_id: team.id,
       },
     });
   },
@@ -40,6 +41,11 @@ export default {
         team_id: team.id
       },
       order: [['runDate', 'DESC']],
+    });
+  },
+  settings(team) {
+    return db.TeamSettings.findOne({
+      where: { team_id: team.id }
     });
   },
 };

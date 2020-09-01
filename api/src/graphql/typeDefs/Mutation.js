@@ -36,6 +36,16 @@ export default gql`
     errors: [String!]
   }
 
+  type AddLinkMutationPayload {
+    link: JSON
+    errors: [String!]
+  }
+  
+  type DeleteLinkMutationPayload {
+    deletedLink: JSON
+    errors: [String!]
+  }
+
   type Mutation {
     createTeam(name: String!, password: String): CreateTeamMutationPayload!
     createStandup(date: String!, facilitatorUuid: String!): CreateStandupMutationPayload!
@@ -44,5 +54,7 @@ export default gql`
     setFacilitatorOrder(uuids: [String!]!): SetFacilitatorOrderMutationPayload!
     deleteFacilitator(uuid: String!): DeleteFacilitatorMutationPayload!
     bumpCurrentFacilitatorIndex(teamUuid: String!): BumpCurrentFacilitatorIndexMutationPayload!
+    addLink(teamUuid: String!, url: String!, name: String!): AddLinkMutationPayload!
+    deleteLink(teamUuid: String!, name: String!): DeleteLinkMutationPayload!
   }
 `;
