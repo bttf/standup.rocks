@@ -1,20 +1,38 @@
 import React from 'react';
-import { Button } from 'evergreen-ui';
+import {
+  Button,
+  Heading,
+  Link,
+  ListItem,
+  Pane,
+  Text,
+  UnorderedList,
+} from 'evergreen-ui';
 
-export default ({
-  links = []
-}) => {
-  if (links.length < 1) {
+export default ({links = [], setShowEditLinksModal}) => {
+  if (Object.keys(links).length < 1) {
     return (
       <>
-        <Button onClick={() => {}}>
+        <Button onClick={() => setShowEditLinksModal(true)}>
           Set a list of links for the team's convenience
-        </Button >
+        </Button>
       </>
     );
   }
 
   return (
-    <div>Links</div>
+    <Pane>
+      <Heading size={600}>Links</Heading>
+      <UnorderedList>
+        {Object.keys(links).map(name => (
+          <ListItem>
+            <Text>{name} - </Text>
+            <Link href={links[name]} target="_blank">
+              {links[name]}
+            </Link>
+          </ListItem>
+        ))}
+      </UnorderedList>
+    </Pane>
   );
 };

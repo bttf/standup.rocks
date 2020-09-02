@@ -15,7 +15,12 @@ import './TopNav.css';
 
 const NODE_ENV = process.env;
 
-export default ({code, setShowEditFacilitators, userName}) => {
+export default ({
+  code,
+  setShowEditFacilitators,
+  setShowEditLinksModal,
+  userName,
+}) => {
   const host =
     NODE_ENV === 'production'
       ? 'https://standup.rocks'
@@ -71,6 +76,9 @@ export default ({code, setShowEditFacilitators, userName}) => {
               <Menu.Group>
                 <Menu.Item onSelect={() => setShowEditFacilitators(true)}>
                   Edit facilitators
+                </Menu.Item>
+                <Menu.Item onSelect={() => setShowEditLinksModal(true)}>
+                  Edit team links
                 </Menu.Item>
               </Menu.Group>
             </Menu>

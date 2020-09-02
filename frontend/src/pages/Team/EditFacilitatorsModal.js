@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
-import { Button, Dialog, ListItem, majorScale, Pane, TextInputField, UnorderedList } from 'evergreen-ui';
+import React, {useState} from 'react';
+import {
+  Button,
+  Dialog,
+  ListItem,
+  majorScale,
+  Pane,
+  Text,
+  TextInputField,
+  UnorderedList,
+} from 'evergreen-ui';
 
 export default ({
   facilitators = [],
@@ -10,7 +19,7 @@ export default ({
   // TODO This needs to be brought up to parent component
   const [name, setName] = useState('');
 
-  const onAdd = (name) => {
+  const onAdd = name => {
     createFacilitator(name);
     setName('');
   };
@@ -20,19 +29,17 @@ export default ({
       isShown={showEditFacilitators}
       title="Edit facilitators"
       confirmLabel="Done"
-      onCloseComplete={() => setShowEditFacilitators(false)}
-    >
+      onCloseComplete={() => setShowEditFacilitators(false)}>
       {facilitators.length > 0 && (
         <UnorderedList>
           {facilitators.map(f => (
-            <ListItem>{f.name}</ListItem>
+            <ListItem>
+              <Text size={500}>{f.name}</Text>
+            </ListItem>
           ))}
         </UnorderedList>
       )}
-      <Pane
-        display="flex"
-        alignItems="center"
-      >
+      <Pane display="flex" alignItems="center" marginTop={majorScale(3)}>
         <Pane flexGrow={1} marginX={majorScale(1)}>
           <TextInputField
             label="Facilitator's name"
@@ -41,7 +48,9 @@ export default ({
           />
         </Pane>
         <Pane flexShrink={1}>
-          <Button height={40} onClick={() => onAdd(name)}>Add</Button>
+          <Button height={40} onClick={() => onAdd(name)}>
+            Add
+          </Button>
         </Pane>
       </Pane>
     </Dialog>

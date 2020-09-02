@@ -10,6 +10,7 @@ import Facilitators from './Facilitators';
 import Links from './Links';
 import EditFacilitatorsModal from './EditFacilitatorsModal';
 import EnterUserNamePrompt from './EnterUserNamePrompt';
+import EditLinksModal from './EditLinksModal';
 import './Team.css';
 
 const _userName = window.localStorage.getItem('username');
@@ -23,6 +24,9 @@ const ALL_FACILITATORS_GQL = gql`
       facilitators {
         uuid
         name
+      }
+      settings {
+        links
       }
       todaysStandup: standupOnDate(date: $date) {
         facilitator {
@@ -72,6 +76,15 @@ const CREATE_STANDUP_GQL = gql`
   }
 `;
 
+const ADD_LINK_GQL = gql`
+  mutation AddLink($teamUuid: String!, $name: String!, $url: String!) {
+    addLink(teamUuid: $teamUuid, name: $name, url: $url) {
+      link
+      errors
+    }
+  }
+`;
+
 /**
  * Reminder: All state needs to be contained in THIS component.
  */
@@ -81,6 +94,7 @@ export default ({match}) => {
   const [userName, setUserName] = useState(_userName || '');
   const [hasUserName, setHasUserName] = useState(!!_userName);
   const [showEditFacilitators, setShowEditFacilitators] = useState(false);
+  const [showEditLinksModal, setShowEditLinksModal] = useState(false);
   const {data: allFacilitatorsRes, loading: allFacilitatorsLoading} = useQuery(
     ALL_FACILITATORS_GQL,
     {
@@ -176,6 +190,39 @@ export default ({match}) => {
     },
   });
 
+  const [addLinkM] = useMutation(ADD_LINK_GQL, {
+    update(
+      cache,
+      {
+        data: {
+          addLink: {link},
+        },
+      },
+    ) {
+      const {findTeam} = cache.readQuery({
+        query: ALL_FACILITATORS_GQL,
+        variables: {teamCode, date: todaysDateISO},
+      });
+
+      cache.writeQuery({
+        query: ALL_FACILITATORS_GQL,
+        variables: {teamCode, date: todaysDateISO},
+        data: {
+          findTeam: {
+            ...findTeam,
+            settings: {
+              ...findTeam.settings,
+              links: {
+                ...(findTeam.settings.links || {}),
+                ...link,
+              },
+            },
+          },
+        },
+      });
+    },
+  });
+
   if (!allFacilitatorsRes || !allFacilitatorsRes.findTeam) {
     return (
       <Heading size={900} margin={majorScale(4)}>
@@ -235,6 +282,16 @@ export default ({match}) => {
     });
   };
 
+  const addLink = (teamUuid, name, url) => {
+    return addLinkM({
+      variables: {
+        teamUuid,
+        name,
+        url,
+      },
+    });
+  };
+
   const team = allFacilitatorsRes ? allFacilitatorsRes.findTeam : null;
   const facilitators = allFacilitatorsRes
     ? allFacilitatorsRes.findTeam.facilitators
@@ -245,6 +302,9 @@ export default ({match}) => {
   const todaysStandup = allFacilitatorsRes
     ? allFacilitatorsRes.findTeam.todaysStandup
     : null;
+  const links = allFacilitatorsRes
+    ? allFacilitatorsRes.findTeam.settings.links
+    : [];
 
   function storeUserName() {
     window.localStorage.setItem('username', userName);
@@ -268,6 +328,7 @@ export default ({match}) => {
           userName={userName}
           code={teamCode}
           setShowEditFacilitators={setShowEditFacilitators}
+          setShowEditLinksModal={setShowEditLinksModal}
         />
         <Pane
           border="muted"
@@ -292,8 +353,11 @@ export default ({match}) => {
               createStandup={createStandup}
             />
           </Pane>
-          <Pane marginY={majorScale(2)}>
-            <Links />
+          <Pane>
+            <Links
+              links={links}
+              setShowEditLinksModal={setShowEditLinksModal}
+            />
           </Pane>
         </Pane>
       </div>
@@ -302,6 +366,12 @@ export default ({match}) => {
         createFacilitator={name => createFacilitator(name, team.uuid)}
         showEditFacilitators={showEditFacilitators}
         setShowEditFacilitators={setShowEditFacilitators}
+      />
+      <EditLinksModal
+        links={links}
+        createLink={(name, url) => addLink(team.uuid, name, url)}
+        showEditLinksModal={showEditLinksModal}
+        setShowEditLinksModal={setShowEditLinksModal}
       />
     </>
   );
