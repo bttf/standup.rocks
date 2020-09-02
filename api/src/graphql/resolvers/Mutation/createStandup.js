@@ -39,7 +39,7 @@ async function createStandupMutation(_, args, context) {
   await db.Team.update({
     currentFacilitatorIdx: (team.currentFacilitatorIdx + 1) % team.facilitators.length,
   }, {
-    where: { team_id: facilitator.team_id }
+    where: { id: facilitator.team_id }
   });
 
   return { createdStandup: standup };
