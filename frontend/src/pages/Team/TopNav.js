@@ -1,26 +1,39 @@
 import React from 'react';
-import { CogIcon, DuplicateIcon, majorScale, Menu, minorScale, Pane, Popover, Text, TextInput, toaster } from 'evergreen-ui';
+import {
+  CogIcon,
+  DuplicateIcon,
+  majorScale,
+  Menu,
+  minorScale,
+  Pane,
+  Popover,
+  Text,
+  TextInput,
+  toaster,
+} from 'evergreen-ui';
 import './TopNav.css';
 
 const NODE_ENV = process.env;
 
-export default ({ code, setShowEditFacilitators }) => {
-  const host = NODE_ENV === 'production' ?
-    'https://standup.rocks' : 'http://localhost:3001';
+export default ({code, setShowEditFacilitators, userName}) => {
+  const host =
+    NODE_ENV === 'production'
+      ? 'https://standup.rocks'
+      : 'http://localhost:3001';
 
   const copyUrl = () => {
     // Taken from https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
-    const copyText = document.getElementById("url-input");
+    const copyText = document.getElementById('url-input');
 
     /* Select the text field */
     copyText.select();
     copyText.setSelectionRange(0, 99999); /*For mobile devices*/
 
     /* Copy the text inside the text field */
-    document.execCommand("copy");
+    document.execCommand('copy');
     copyText.blur();
 
-    toaster.success('URL copied!', { duration: 1 });
+    toaster.success('URL copied!', {duration: 1});
   };
 
   return (
@@ -31,8 +44,7 @@ export default ({ code, setShowEditFacilitators }) => {
       display="flex"
       padding={majorScale(2)}
       alignItems="center"
-      justifyContent="center"
-    >
+      justifyContent="center">
       <div className="quick-copy" onClick={copyUrl}>
         <Pane className="url" paddingX={majorScale(2)} paddingY={minorScale(1)}>
           <TextInput
@@ -44,10 +56,12 @@ export default ({ code, setShowEditFacilitators }) => {
         </Pane>
         <Pane className="cta" paddingX={majorScale(2)} paddingY={minorScale(1)}>
           <DuplicateIcon size={10} marginRight={majorScale(1)} />
-          <Text color="inherit">
-            Copy link
-          </Text>
+          <Text color="inherit">Copy link</Text>
         </Pane>
+      </div>
+
+      <div className="welcome">
+        <Text>Welcome, {userName}</Text>
       </div>
 
       <div className="team-settings">
@@ -55,16 +69,18 @@ export default ({ code, setShowEditFacilitators }) => {
           content={
             <Menu>
               <Menu.Group>
-                <Menu.Item
-                  onSelect={() => setShowEditFacilitators(true)}
-                >
+                <Menu.Item onSelect={() => setShowEditFacilitators(true)}>
                   Edit facilitators
                 </Menu.Item>
               </Menu.Group>
             </Menu>
-          }
-        >
-          <CogIcon color="muted" size={20} marginRight={majorScale(1)} cursor="pointer" />
+          }>
+          <CogIcon
+            color="muted"
+            size={20}
+            marginRight={majorScale(1)}
+            cursor="pointer"
+          />
         </Popover>
       </div>
     </Pane>
