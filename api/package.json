@@ -29,7 +29,8 @@
     "nanoid": "^3.1.12",
     "pg": "^8.3.0",
     "pg-native": "^3.0.0",
-    "sequelize": "^5.22.3"
+    "sequelize": "^5.22.3",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "eslint": "^7.7.0",
