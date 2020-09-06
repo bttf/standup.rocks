@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
+import {debounce} from 'lodash';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 import {gql} from 'apollo-boost';
 import {Button, Heading, majorScale, Pane, TextInputField} from 'evergreen-ui';
 import {parseISO, formatISO, format} from 'date-fns';
 import {LOCAL_STORAGE_RECENT_TEAMS} from '../../lib/constants';
+import socket from '../../lib/socket';
 import TopNav from './TopNav';
 import Clock from './Clock';
 import Facilitators from './Facilitators';
@@ -30,6 +32,9 @@ const ALL_FACILITATORS_GQL = gql`
       }
       todaysStandup: standupOnDate(date: $date) {
         facilitator {
+          name
+        }
+        upNext {
           name
         }
       }
@@ -70,6 +75,9 @@ const CREATE_STANDUP_GQL = gql`
         facilitator {
           name
         }
+        upNext {
+          name
+        }
       }
       errors
     }
@@ -85,6 +93,14 @@ const ADD_LINK_GQL = gql`
   }
 `;
 
+const DELETE_STANDUP_GQL = gql`
+  mutation DeleteStandup($teamUuid: String!, $date: String!) {
+    deleteStandup(teamUuid: $teamUuid, date: $date) {
+      errors
+    }
+  }
+`;
+
 /**
  * Reminder: All state needs to be contained in THIS component.
  */
@@ -95,12 +111,13 @@ export default ({match}) => {
   const [hasUserName, setHasUserName] = useState(!!_userName);
   const [showEditFacilitators, setShowEditFacilitators] = useState(false);
   const [showEditLinksModal, setShowEditLinksModal] = useState(false);
-  const {data: allFacilitatorsRes, loading: allFacilitatorsLoading} = useQuery(
-    ALL_FACILITATORS_GQL,
-    {
-      variables: {teamCode, date: todaysDateISO},
-    },
-  );
+  const {
+    data: allFacilitatorsRes,
+    loading: allFacilitatorsLoading,
+    refetch: refetchAllFacilitators,
+  } = useQuery(ALL_FACILITATORS_GQL, {
+    variables: {teamCode, date: todaysDateISO},
+  });
 
   const [createFacilitatorM] = useMutation(CREATE_FACILITATOR_GQL, {
     update(
@@ -223,6 +240,28 @@ export default ({match}) => {
     },
   });
 
+  const [deleteStandupM] = useMutation(DELETE_STANDUP_GQL);
+
+  /**
+   * Listen for changes via sockets
+   */
+  const debouncedRefetchAllFacilitators = debounce(
+    () => refetchAllFacilitators(),
+    200,
+  );
+
+  socket.on(`${teamCode}_standup_created`, () => {
+    debouncedRefetchAllFacilitators();
+  });
+
+  socket.on(`${teamCode}_standup_deleted`, () => {
+    debouncedRefetchAllFacilitators();
+  });
+
+  socket.on(`${teamCode}_facilitators_bumped`, () => {
+    debouncedRefetchAllFacilitators();
+  });
+
   if (!allFacilitatorsRes || !allFacilitatorsRes.findTeam) {
     return (
       <Heading size={900} margin={majorScale(4)}>
@@ -292,6 +331,15 @@ export default ({match}) => {
     });
   };
 
+  const deleteStandup = teamUuid => {
+    return deleteStandupM({
+      variables: {
+        date: todaysDateISO,
+        teamUuid,
+      },
+    });
+  };
+
   const team = allFacilitatorsRes ? allFacilitatorsRes.findTeam : null;
   const facilitators = allFacilitatorsRes
     ? allFacilitatorsRes.findTeam.facilitators
@@ -351,6 +399,7 @@ export default ({match}) => {
                 bumpCurrentFacilitatorIndex(team.uuid)
               }
               createStandup={createStandup}
+              deleteStandup={() => deleteStandup(team.uuid)}
             />
           </Pane>
           <Pane>

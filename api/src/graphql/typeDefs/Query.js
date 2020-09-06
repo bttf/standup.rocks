@@ -20,6 +20,7 @@ export default gql`
     uuid: String!
     runDate: String!
     facilitator: Facilitator!
+    upNext: Facilitator!
     team: Team!
   }
 
@@ -37,7 +38,6 @@ export default gql`
   type TeamSettings {
     links: JSON
   }
-
 
   type Query {
     hello: String!

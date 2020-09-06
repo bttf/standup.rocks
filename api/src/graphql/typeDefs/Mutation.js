@@ -40,21 +40,42 @@ export default gql`
     link: JSON
     errors: [String!]
   }
-  
+
   type DeleteLinkMutationPayload {
     deletedLink: JSON
     errors: [String!]
   }
 
+  type DeleteStandupMutationPayload {
+    deletedStandup: Standup
+    errors: [String!]
+  }
+
   type Mutation {
     createTeam(name: String!, password: String): CreateTeamMutationPayload!
-    createStandup(date: String!, facilitatorUuid: String!): CreateStandupMutationPayload!
+    createStandup(
+      date: String!
+      facilitatorUuid: String!
+    ): CreateStandupMutationPayload!
     createAbsentee(facilitatorUuid: String!): CreateAbsenteeMutationPayload!
-    createFacilitator(name: String!, teamUuid: String!): CreateFacilitatorMutationPayload!
+    createFacilitator(
+      name: String!
+      teamUuid: String!
+    ): CreateFacilitatorMutationPayload!
     setFacilitatorOrder(uuids: [String!]!): SetFacilitatorOrderMutationPayload!
     deleteFacilitator(uuid: String!): DeleteFacilitatorMutationPayload!
-    bumpCurrentFacilitatorIndex(teamUuid: String!): BumpCurrentFacilitatorIndexMutationPayload!
-    addLink(teamUuid: String!, url: String!, name: String!): AddLinkMutationPayload!
+    bumpCurrentFacilitatorIndex(
+      teamUuid: String!
+    ): BumpCurrentFacilitatorIndexMutationPayload!
+    addLink(
+      teamUuid: String!
+      url: String!
+      name: String!
+    ): AddLinkMutationPayload!
     deleteLink(teamUuid: String!, name: String!): DeleteLinkMutationPayload!
+    deleteStandup(
+      teamUuid: String!
+      date: String!
+    ): DeleteStandupMutationPayload!
   }
 `;
