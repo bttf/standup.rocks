@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   CogIcon,
   DuplicateIcon,
@@ -9,36 +9,36 @@ import {
   Popover,
   Text,
   TextInput,
-  toaster,
-} from 'evergreen-ui';
-import './TopNav.css';
+  toaster
+} from "evergreen-ui";
+import "./TopNav.css";
 
-const NODE_ENV = process.env;
+const NODE_ENV = process.env.NODE_ENV;
 
 export default ({
   code,
   setShowEditFacilitators,
   setShowEditLinksModal,
-  userName,
+  userName
 }) => {
   const host =
-    NODE_ENV === 'production'
-      ? 'https://standup.rocks'
-      : 'http://localhost:3001';
+    NODE_ENV === "production"
+      ? "https://standup.rocks"
+      : "http://localhost:3001";
 
   const copyUrl = () => {
     // Taken from https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
-    const copyText = document.getElementById('url-input');
+    const copyText = document.getElementById("url-input");
 
     /* Select the text field */
     copyText.select();
     copyText.setSelectionRange(0, 99999); /*For mobile devices*/
 
     /* Copy the text inside the text field */
-    document.execCommand('copy');
+    document.execCommand("copy");
     copyText.blur();
 
-    toaster.success('URL copied!', {duration: 1});
+    toaster.success("URL copied!", { duration: 1 });
   };
 
   return (
@@ -49,7 +49,8 @@ export default ({
       display="flex"
       padding={majorScale(2)}
       alignItems="center"
-      justifyContent="center">
+      justifyContent="center"
+    >
       <div className="quick-copy" onClick={copyUrl}>
         <Pane className="url" paddingX={majorScale(2)} paddingY={minorScale(1)}>
           <TextInput
@@ -82,7 +83,8 @@ export default ({
                 </Menu.Item>
               </Menu.Group>
             </Menu>
-          }>
+          }
+        >
           <CogIcon
             color="muted"
             size={20}
