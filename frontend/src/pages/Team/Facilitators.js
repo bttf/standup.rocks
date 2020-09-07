@@ -4,11 +4,9 @@ import {
   Button,
   Heading,
   IconButton,
-  Link,
   majorScale,
   Pane,
   Spinner,
-  Text,
   TickCircleIcon,
   UndoIcon,
 } from 'evergreen-ui';

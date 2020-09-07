@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Heading, majorScale, Pane, TextInputField } from 'evergreen-ui';
 
 export default ({
