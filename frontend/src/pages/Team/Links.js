@@ -5,7 +5,6 @@ import {
   Link,
   ListItem,
   Pane,
-  Text,
   UnorderedList
 } from "evergreen-ui";
 
