@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {format} from 'date-fns';
-import {Heading, Pane, Paragraph} from 'evergreen-ui';
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
 
 export default () => {
   const [tick, setTick] = useState(0);
@@ -11,13 +11,13 @@ export default () => {
 
   return (
     <Pane className="clock-container">
-      <Heading size={900}>
-        <span>{format(new Date(), 'hh')}</span>
-        <span style={{visibility: tick === 0 ? 'hidden' : 'visible'}}>:</span>
-        <span>{format(new Date(), 'mm a')}</span>
+      <Heading size={900} marginBottom={majorScale(1)}>
+        <span>{format(new Date(), "hh")}</span>
+        <span style={{ visibility: tick === 0 ? "hidden" : "visible" }}>:</span>
+        <span>{format(new Date(), "mm a")}</span>
       </Heading>
       <Paragraph>
-        {format(new Date(), 'qqq yyyy')} - {format(new Date(), 'MMM do')}
+        {format(new Date(), "qqq yyyy")} - {format(new Date(), "E, MMM do")}
       </Paragraph>
     </Pane>
   );
