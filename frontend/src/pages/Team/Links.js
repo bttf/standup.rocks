@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Button,
   Heading,
@@ -6,10 +6,10 @@ import {
   ListItem,
   Pane,
   Text,
-  UnorderedList,
-} from 'evergreen-ui';
+  UnorderedList
+} from "evergreen-ui";
 
-export default ({links = [], setShowEditLinksModal}) => {
+export default ({ links = [], setShowEditLinksModal }) => {
   if (Object.keys(links).length < 1) {
     return (
       <>
@@ -26,9 +26,8 @@ export default ({links = [], setShowEditLinksModal}) => {
       <UnorderedList>
         {Object.keys(links).map(name => (
           <ListItem>
-            <Text>{name} - </Text>
             <Link href={links[name]} target="_blank">
-              {links[name]}
+              {name}
             </Link>
           </ListItem>
         ))}
