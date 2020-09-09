@@ -389,7 +389,7 @@ export default ({ match }) => {
           flexDirection="column"
         >
           <Heading size={600} marginY={majorScale(1)}>
-            Core pod
+            {team.name}
           </Heading>
           <Clock />
           <Pane marginY={majorScale(2)}>
