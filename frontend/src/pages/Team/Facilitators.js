@@ -6,7 +6,9 @@ import {
   IconButton,
   majorScale,
   Pane,
+  Small,
   Spinner,
+  Text,
   TickCircleIcon,
   UndoIcon,
 } from 'evergreen-ui';
@@ -40,15 +42,22 @@ export default ({
 
   return (
     <Pane>
-      <Heading size={300} marginY={majorScale(1)}>
-        Facilitating today is:
+      <Heading size={400} marginY={majorScale(1)}>
+        {isFacilitatorConfirmed
+          ? 'Facilitating today is:'
+          : 'Who is facilitating today?'}{' '}
+        {!isFacilitatorConfirmed && (
+          <Text muted>
+            <Small>(Please accept or skip)</Small>
+          </Text>
+        )}
       </Heading>
 
       <Pane display="flex" alignItems="center">
         <Heading size={900} marginY={majorScale(1)}>
           {isFacilitatorConfirmed
             ? confirmedFacilitator.name
-            : `${facilitators[0].name}?`}
+            : facilitators[0].name}
         </Heading>
 
         {isFacilitatorConfirmed ? (
@@ -78,12 +87,17 @@ export default ({
       </Pane>
 
       {facilitators.length > 1 && (
-        <Heading size={300} marginY={majorScale(1)}>
-          Up next:{' '}
-          {isFacilitatorConfirmed
-            ? upNextFacilitator.name
-            : facilitators[1].name}
-        </Heading>
+        <>
+          <Heading size={400} marginY={majorScale(1)}>
+            Up next:{' '}
+            {isFacilitatorConfirmed
+              ? upNextFacilitator.name
+              : facilitators[1].name}
+          </Heading>
+          <Text muted>
+            <Small>Once confirmed, facilitator will rotate the next day</Small>
+          </Text>
+        </>
       )}
     </Pane>
   );

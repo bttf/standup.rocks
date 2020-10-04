@@ -11,9 +11,11 @@ import Clock from './Clock';
 import Facilitators from './Facilitators';
 import Links from './Links';
 import EditFacilitatorsModal from './EditFacilitatorsModal';
-import EnterUserNamePrompt from './EnterUserNamePrompt';
 import EditLinksModal from './EditLinksModal';
+import PrevStandups from './PrevStandups';
 import './Team.css';
+
+const CONTENT_WIDTH = '800px';
 
 const ALL_FACILITATORS_GQL = gql`
   query AllFacilitators($teamCode: String!, $date: String!) {
@@ -33,6 +35,12 @@ const ALL_FACILITATORS_GQL = gql`
           name
         }
         upNext {
+          name
+        }
+      }
+      standups {
+        runDate
+        facilitator {
           name
         }
       }
@@ -349,6 +357,11 @@ export default ({match}) => {
   const links = allFacilitatorsRes
     ? allFacilitatorsRes.findTeam.settings.links
     : [];
+  const standups = allFacilitatorsRes
+    ? (allFacilitatorsRes.findTeam.standups || []).filter(
+        s => s.runDate !== todaysDateISO,
+      )
+    : [];
 
   return (
     <>
@@ -360,7 +373,7 @@ export default ({match}) => {
         />
         <Pane
           border="muted"
-          width="800px"
+          width={CONTENT_WIDTH}
           marginX="auto"
           marginY={majorScale(2)}
           padding={majorScale(4)}
@@ -392,13 +405,18 @@ export default ({match}) => {
             />
           </Pane>
         </Pane>
+        <Pane width={CONTENT_WIDTH} marginX="auto" marginY={majorScale(2)}>
+          <PrevStandups standups={standups} />
+        </Pane>
       </div>
+
       <EditFacilitatorsModal
         facilitators={facilitators}
         createFacilitator={name => createFacilitator(name, team.uuid)}
         showEditFacilitators={showEditFacilitators}
         setShowEditFacilitators={setShowEditFacilitators}
       />
+
       <EditLinksModal
         links={links}
         createLink={(name, url) => addLink(team.uuid, name, url)}
