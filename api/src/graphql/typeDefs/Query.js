@@ -16,12 +16,18 @@ export default gql`
     team: Team!
   }
 
+  type ActionItem {
+    uuid: String!
+    text: String!
+  }
+
   type Standup {
     uuid: String!
     runDate: String!
     facilitator: Facilitator
     upNext: Facilitator!
     team: Team!
+    actionItems: [ActionItem!]!
   }
 
   type Team {

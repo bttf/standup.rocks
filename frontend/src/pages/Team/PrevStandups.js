@@ -33,7 +33,7 @@ export default ({standups}) => {
               Run by: {s.facilitator ? s.facilitator.name : '<deleted>'}
             </Heading>
             <Heading size={500} padding={majorScale(2)}>
-              7 Action items
+              {s.actionItems.length} Action items
             </Heading>
           </Pane>
         ))}

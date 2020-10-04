@@ -8,6 +8,7 @@ import bumpCurrentFacilitatorIndex from './bumpCurrentFacilitatorIndex';
 import addLink from './addLink';
 import deleteLink from './deleteLink';
 import deleteStandup from './deleteStandup';
+import createActionItem from './createActionItem';
 
 export default {
   createTeam,
@@ -20,4 +21,5 @@ export default {
   addLink,
   deleteLink,
   deleteStandup,
+  createActionItem,
 };

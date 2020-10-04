@@ -37,11 +37,17 @@ const ALL_FACILITATORS_GQL = gql`
         upNext {
           name
         }
+        actionItems {
+          text
+        }
       }
       standups {
         runDate
         facilitator {
           name
+        }
+        actionItems {
+          text
         }
       }
     }
@@ -186,8 +192,6 @@ export default ({match}) => {
           query: ALL_FACILITATORS_GQL,
           variables: {teamCode, date: todaysDateISO},
         });
-
-        console.log('facilitators', facilitators);
 
         cache.writeQuery({
           query: ALL_FACILITATORS_GQL,
@@ -399,6 +403,7 @@ export default ({match}) => {
         s => s.runDate !== todaysDateISO,
       )
     : [];
+  const actionItems = todaysStandup ? todaysStandup.actionItems : [];
 
   return (
     <>

@@ -51,6 +51,11 @@ export default gql`
     errors: [String!]
   }
 
+  type CreateActionItemPayload {
+    actionItem: ActionItem
+    errors: [String!]
+  }
+
   type Mutation {
     createTeam(name: String!, password: String): CreateTeamMutationPayload!
     createStandup(
@@ -77,5 +82,9 @@ export default gql`
       teamUuid: String!
       date: String!
     ): DeleteStandupMutationPayload!
+    createActionItem(
+      text: String!
+      standupUuid: String!
+    ): CreateActionItemPayload!
   }
 `;

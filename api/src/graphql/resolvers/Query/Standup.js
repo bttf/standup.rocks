@@ -23,4 +23,10 @@ export default {
       where: {id: standup.team_id},
     });
   },
+  actionItems(standup) {
+    return db.ActionItem.findAll({
+      where: {standup_id: standup.id},
+      order: [['id', 'asc']],
+    });
+  },
 };
