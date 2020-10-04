@@ -19,7 +19,7 @@ export default gql`
   type Standup {
     uuid: String!
     runDate: String!
-    facilitator: Facilitator!
+    facilitator: Facilitator
     upNext: Facilitator!
     team: Team!
   }

@@ -3,6 +3,10 @@ import {parseISO, format} from 'date-fns';
 import {Heading, majorScale, Pane} from 'evergreen-ui';
 
 export default ({standups}) => {
+  if (!standups || !standups.length) {
+    return null;
+  }
+
   return (
     <>
       <Heading size={900} marginBottom={majorScale(4)}>
@@ -26,7 +30,7 @@ export default ({standups}) => {
               padding={majorScale(2)}
               overflow="hidden"
               textOverflow="ellipsis">
-              Run by: {s.facilitator.name}
+              Run by: {s.facilitator ? s.facilitator.name : '<deleted>'}
             </Heading>
             <Heading size={500} padding={majorScale(2)}>
               7 Action items

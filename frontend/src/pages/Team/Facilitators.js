@@ -48,7 +48,7 @@ export default ({
           : 'Who is facilitating today?'}{' '}
         {!isFacilitatorConfirmed && (
           <Text muted>
-            <Small>(Please accept or skip)</Small>
+            <Small>(Please confirm or skip)</Small>
           </Text>
         )}
       </Heading>

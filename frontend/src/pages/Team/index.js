@@ -107,6 +107,25 @@ const DELETE_STANDUP_GQL = gql`
   }
 `;
 
+const DELETE_FACILITATOR_GQL = gql`
+  mutation DeleteFacilitator($uuid: String!) {
+    deleteFacilitator(uuid: $uuid) {
+      deletedFacilitator {
+        name
+      }
+      errors
+    }
+  }
+`;
+
+const DELETE_LINK_GQL = gql`
+  mutation DeleteLink($teamUuid: String!, $name: String!) {
+    deleteLink(teamUuid: $teamUuid, name: $name) {
+      errors
+    }
+  }
+`;
+
 /**
  * Reminder: All state needs to be contained in THIS component.
  */
@@ -246,6 +265,10 @@ export default ({match}) => {
 
   const [deleteStandupM] = useMutation(DELETE_STANDUP_GQL);
 
+  const [deleteFacilitatorM] = useMutation(DELETE_FACILITATOR_GQL);
+
+  const [deleteLinkM] = useMutation(DELETE_LINK_GQL);
+
   /**
    * Listen for changes via sockets
    */
@@ -344,6 +367,20 @@ export default ({match}) => {
     });
   };
 
+  const deleteFacilitator = async uuid => {
+    await deleteFacilitatorM({
+      variables: {uuid},
+    });
+    refetchAllFacilitators();
+  };
+
+  const deleteLink = async (teamUuid, name) => {
+    await deleteLinkM({
+      variables: {teamUuid, name},
+    });
+    refetchAllFacilitators();
+  };
+
   const team = allFacilitatorsRes ? allFacilitatorsRes.findTeam : null;
   const facilitators = allFacilitatorsRes
     ? allFacilitatorsRes.findTeam.facilitators
@@ -413,6 +450,7 @@ export default ({match}) => {
       <EditFacilitatorsModal
         facilitators={facilitators}
         createFacilitator={name => createFacilitator(name, team.uuid)}
+        deleteFacilitator={uuid => deleteFacilitator(uuid)}
         showEditFacilitators={showEditFacilitators}
         setShowEditFacilitators={setShowEditFacilitators}
       />
@@ -420,6 +458,7 @@ export default ({match}) => {
       <EditLinksModal
         links={links}
         createLink={(name, url) => addLink(team.uuid, name, url)}
+        deleteLink={name => deleteLink(team.uuid, name)}
         showEditLinksModal={showEditLinksModal}
         setShowEditLinksModal={setShowEditLinksModal}
       />

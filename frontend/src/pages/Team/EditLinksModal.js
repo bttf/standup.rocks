@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   Button,
+  CrossIcon,
   Dialog,
   Link,
   ListItem,
@@ -16,6 +17,7 @@ export default function EditLinksModal({
   showEditLinksModal,
   setShowEditLinksModal,
   createLink,
+  deleteLink,
 }) {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
@@ -35,9 +37,13 @@ export default function EditLinksModal({
       {Object.keys(links).length > 0 && (
         <UnorderedList>
           {Object.keys(links).map(name => (
-            <ListItem>
-              <Text>{name} - </Text>
-              <Link href={links[name]}>{links[name]}</Link>
+            <ListItem display="flex" justifyContent="space-between">
+              <Link href={links[name]}>{name}</Link>
+              <CrossIcon
+                color="danger"
+                cursor="pointer"
+                onClick={() => deleteLink(name)}
+              />
             </ListItem>
           ))}
         </UnorderedList>

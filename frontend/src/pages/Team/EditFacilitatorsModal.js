@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   Button,
+  CrossIcon,
   Dialog,
   ListItem,
   majorScale,
@@ -13,6 +14,7 @@ import {
 export default ({
   facilitators = [],
   createFacilitator,
+  deleteFacilitator,
   showEditFacilitators,
   setShowEditFacilitators,
 }) => {
@@ -33,8 +35,13 @@ export default ({
       {facilitators.length > 0 && (
         <UnorderedList>
           {facilitators.map(f => (
-            <ListItem>
+            <ListItem display="flex" justifyContent="space-between">
               <Text size={500}>{f.name}</Text>
+              <CrossIcon
+                color="danger"
+                cursor="pointer"
+                onClick={() => deleteFacilitator(f.uuid)}
+              />
             </ListItem>
           ))}
         </UnorderedList>

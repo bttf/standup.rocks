@@ -1,13 +1,13 @@
 import db from 'src/data';
-import { keyBy, range } from 'lodash';
+import {keyBy, range} from 'lodash';
 
 export default {
   async facilitators(team, _args, _context) {
     const currIdx = team.currentFacilitatorIdx;
     const facilitators = await db.Facilitator.findAll({
       where: {
-        team_id: team.id
-      }
+        team_id: team.id,
+      },
     });
 
     if (!facilitators || !facilitators.length) return [];
@@ -21,13 +21,13 @@ export default {
   absentees(team, _args, _context) {
     return db.Absentee.findAll({
       where: {
-        team_id: team.id
+        team_id: team.id,
       },
       order: [['createdAt', 'asc']],
     });
   },
   standupOnDate(team, args, _context) {
-    const { date } = args;
+    const {date} = args;
     return db.Standup.findOne({
       where: {
         runDate: date,
@@ -38,14 +38,14 @@ export default {
   standups(team, _args, _context) {
     return db.Standup.findAll({
       where: {
-        team_id: team.id
+        team_id: team.id,
       },
       order: [['runDate', 'DESC']],
     });
   },
   settings(team) {
     return db.TeamSettings.findOne({
-      where: { team_id: team.id }
+      where: {team_id: team.id},
     });
   },
 };
