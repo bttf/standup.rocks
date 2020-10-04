@@ -64,7 +64,7 @@ export default ({
           <Pane display="flex" marginX={majorScale(2)}>
             <IconButton
               icon={UndoIcon}
-              intent="default"
+              intent="none"
               marginRight={majorScale(1)}
               onClick={deleteStandup}
             />

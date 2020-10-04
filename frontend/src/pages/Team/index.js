@@ -13,6 +13,7 @@ import Links from './Links';
 import EditFacilitatorsModal from './EditFacilitatorsModal';
 import EditLinksModal from './EditLinksModal';
 import PrevStandups from './PrevStandups';
+import ActionItems from './ActionItems';
 import './Team.css';
 
 const CONTENT_WIDTH = '800px';
@@ -31,6 +32,7 @@ const ALL_FACILITATORS_GQL = gql`
         links
       }
       todaysStandup: standupOnDate(date: $date) {
+        uuid
         facilitator {
           name
         }
@@ -42,6 +44,7 @@ const ALL_FACILITATORS_GQL = gql`
         }
       }
       standups {
+        uuid
         runDate
         facilitator {
           name
@@ -127,6 +130,17 @@ const DELETE_FACILITATOR_GQL = gql`
 const DELETE_LINK_GQL = gql`
   mutation DeleteLink($teamUuid: String!, $name: String!) {
     deleteLink(teamUuid: $teamUuid, name: $name) {
+      errors
+    }
+  }
+`;
+
+const CREATE_ACTION_ITEM_GQL = gql`
+  mutation CreateActionItem($text: String!, $standupUuid: String!) {
+    createActionItem(text: $text, standupUuid: $standupUuid) {
+      actionItem {
+        text
+      }
       errors
     }
   }
@@ -273,6 +287,36 @@ export default ({match}) => {
 
   const [deleteLinkM] = useMutation(DELETE_LINK_GQL);
 
+  const [createActionItemM] = useMutation(CREATE_ACTION_ITEM_GQL, {
+    update(
+      cache,
+      {
+        data: {
+          createActionItem: {actionItem},
+        },
+      },
+    ) {
+      const {findTeam} = cache.readQuery({
+        query: ALL_FACILITATORS_GQL,
+        variables: {teamCode, date: todaysDateISO},
+      });
+
+      cache.writeQuery({
+        query: ALL_FACILITATORS_GQL,
+        variables: {teamCode, date: todaysDateISO},
+        data: {
+          findTeam: {
+            ...findTeam,
+            todaysStandup: {
+              ...findTeam.todaysStandup,
+              actionItems: [...findTeam.todaysStandup.actionItems, actionItem],
+            },
+          },
+        },
+      });
+    },
+  });
+
   /**
    * Listen for changes via sockets
    */
@@ -385,6 +429,12 @@ export default ({match}) => {
     refetchAllFacilitators();
   };
 
+  const createActionItem = async (standupUuid, text) => {
+    await createActionItemM({
+      variables: {standupUuid, text},
+    });
+  };
+
   const team = allFacilitatorsRes ? allFacilitatorsRes.findTeam : null;
   const facilitators = allFacilitatorsRes
     ? allFacilitatorsRes.findTeam.facilitators
@@ -422,29 +472,37 @@ export default ({match}) => {
           elevation={1}
           display="flex"
           flexDirection="column">
-          <Heading size={600} marginY={majorScale(1)}>
-            {team.name}
-          </Heading>
-          <Clock />
-          <Pane marginY={majorScale(2)}>
-            <Facilitators
-              isLoading={allFacilitatorsLoading}
-              absentees={absentees}
-              facilitators={facilitators}
-              setShowEditFacilitators={setShowEditFacilitators}
-              todaysStandup={todaysStandup}
-              bumpCurrentFacilitatorIndex={() =>
-                bumpCurrentFacilitatorIndex(team.uuid)
-              }
-              createStandup={createStandup}
-              deleteStandup={() => deleteStandup(team.uuid)}
-            />
-          </Pane>
-          <Pane>
-            <Links
-              links={links}
-              setShowEditLinksModal={setShowEditLinksModal}
-            />
+          <Pane display="flex" marginY={majorScale(2)}>
+            <Pane flex="1">
+              <Heading size={600} marginY={majorScale(1)}>
+                {team.name}
+              </Heading>
+              <Clock />
+              <Facilitators
+                isLoading={allFacilitatorsLoading}
+                absentees={absentees}
+                facilitators={facilitators}
+                setShowEditFacilitators={setShowEditFacilitators}
+                todaysStandup={todaysStandup}
+                bumpCurrentFacilitatorIndex={() =>
+                  bumpCurrentFacilitatorIndex(team.uuid)
+                }
+                createStandup={createStandup}
+                deleteStandup={() => deleteStandup(team.uuid)}
+              />
+              <Links
+                links={links}
+                setShowEditLinksModal={setShowEditLinksModal}
+              />
+            </Pane>
+            <Pane flex="1">
+              <ActionItems
+                standup={todaysStandup}
+                disabled={!todaysStandup}
+                actionItems={actionItems}
+                createActionItem={createActionItem}
+              />
+            </Pane>
           </Pane>
         </Pane>
         <Pane width={CONTENT_WIDTH} marginX="auto" marginY={majorScale(2)}>

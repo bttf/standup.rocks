@@ -34,8 +34,8 @@ export default ({
       onCloseComplete={() => setShowEditFacilitators(false)}>
       {facilitators.length > 0 && (
         <UnorderedList>
-          {facilitators.map(f => (
-            <ListItem display="flex" justifyContent="space-between">
+          {facilitators.map((f, i) => (
+            <ListItem key={i} display="flex" justifyContent="space-between">
               <Text size={500}>{f.name}</Text>
               <CrossIcon
                 color="danger"
