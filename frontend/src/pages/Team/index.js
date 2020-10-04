@@ -490,10 +490,12 @@ export default ({match}) => {
                 createStandup={createStandup}
                 deleteStandup={() => deleteStandup(team.uuid)}
               />
-              <Links
-                links={links}
-                setShowEditLinksModal={setShowEditLinksModal}
-              />
+              <Pane marginTop={majorScale(2)}>
+                <Links
+                  links={links}
+                  setShowEditLinksModal={setShowEditLinksModal}
+                />
+              </Pane>
             </Pane>
             <Pane flex="1">
               <ActionItems
