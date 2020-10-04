@@ -1,21 +1,19 @@
-import React, { useState } from "react";
-import { debounce } from "lodash";
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import { Heading, majorScale, Pane } from "evergreen-ui";
-import { formatISO } from "date-fns";
-import { LOCAL_STORAGE_RECENT_TEAMS } from "../../lib/constants";
-import socket from "../../lib/socket";
-import TopNav from "./TopNav";
-import Clock from "./Clock";
-import Facilitators from "./Facilitators";
-import Links from "./Links";
-import EditFacilitatorsModal from "./EditFacilitatorsModal";
-import EnterUserNamePrompt from "./EnterUserNamePrompt";
-import EditLinksModal from "./EditLinksModal";
-import "./Team.css";
-
-const _userName = window.localStorage.getItem("username");
+import React, {useState} from 'react';
+import {debounce} from 'lodash';
+import {useQuery, useMutation} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
+import {Heading, majorScale, Pane} from 'evergreen-ui';
+import {formatISO} from 'date-fns';
+import {LOCAL_STORAGE_RECENT_TEAMS} from '../../lib/constants';
+import socket from '../../lib/socket';
+import TopNav from './TopNav';
+import Clock from './Clock';
+import Facilitators from './Facilitators';
+import Links from './Links';
+import EditFacilitatorsModal from './EditFacilitatorsModal';
+import EnterUserNamePrompt from './EnterUserNamePrompt';
+import EditLinksModal from './EditLinksModal';
+import './Team.css';
 
 const ALL_FACILITATORS_GQL = gql`
   query AllFacilitators($teamCode: String!, $date: String!) {
@@ -104,19 +102,17 @@ const DELETE_STANDUP_GQL = gql`
 /**
  * Reminder: All state needs to be contained in THIS component.
  */
-export default ({ match }) => {
-  const todaysDateISO = formatISO(new Date(), { representation: "date" });
-  const { teamCode } = match.params;
-  const [userName, setUserName] = useState(_userName || "");
-  const [hasUserName, setHasUserName] = useState(!!_userName);
+export default ({match}) => {
+  const todaysDateISO = formatISO(new Date(), {representation: 'date'});
+  const {teamCode} = match.params;
   const [showEditFacilitators, setShowEditFacilitators] = useState(false);
   const [showEditLinksModal, setShowEditLinksModal] = useState(false);
   const {
     data: allFacilitatorsRes,
     loading: allFacilitatorsLoading,
-    refetch: refetchAllFacilitators
+    refetch: refetchAllFacilitators,
   } = useQuery(ALL_FACILITATORS_GQL, {
-    variables: { teamCode, date: todaysDateISO }
+    variables: {teamCode, date: todaysDateISO},
   });
 
   const [createFacilitatorM] = useMutation(CREATE_FACILITATOR_GQL, {
@@ -124,26 +120,26 @@ export default ({ match }) => {
       cache,
       {
         data: {
-          createFacilitator: { createdFacilitator: facilitator }
-        }
-      }
+          createFacilitator: {createdFacilitator: facilitator},
+        },
+      },
     ) {
-      const { findTeam } = cache.readQuery({
+      const {findTeam} = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: { teamCode, date: todaysDateISO }
+        variables: {teamCode, date: todaysDateISO},
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: { teamCode, date: todaysDateISO },
+        variables: {teamCode, date: todaysDateISO},
         data: {
           findTeam: {
             ...findTeam,
-            facilitators: [...(findTeam.facilitators || []), facilitator]
-          }
-        }
+            facilitators: [...(findTeam.facilitators || []), facilitator],
+          },
+        },
       });
-    }
+    },
   });
 
   const [bumpCurrentFacilitatorIndexM] = useMutation(
@@ -154,30 +150,30 @@ export default ({ match }) => {
         {
           data: {
             bumpCurrentFacilitatorIndex: {
-              team: { facilitators }
-            }
-          }
-        }
+              team: {facilitators},
+            },
+          },
+        },
       ) {
-        const { findTeam } = cache.readQuery({
+        const {findTeam} = cache.readQuery({
           query: ALL_FACILITATORS_GQL,
-          variables: { teamCode, date: todaysDateISO }
+          variables: {teamCode, date: todaysDateISO},
         });
 
-        console.log("facilitators", facilitators);
+        console.log('facilitators', facilitators);
 
         cache.writeQuery({
           query: ALL_FACILITATORS_GQL,
-          variables: { teamCode, date: todaysDateISO },
+          variables: {teamCode, date: todaysDateISO},
           data: {
             findTeam: {
               ...findTeam,
-              facilitators
-            }
-          }
+              facilitators,
+            },
+          },
         });
-      }
-    }
+      },
+    },
   );
 
   const [createStandupM] = useMutation(CREATE_STANDUP_GQL, {
@@ -185,26 +181,26 @@ export default ({ match }) => {
       cache,
       {
         data: {
-          createStandup: { createdStandup: todaysStandup }
-        }
-      }
+          createStandup: {createdStandup: todaysStandup},
+        },
+      },
     ) {
-      const { findTeam } = cache.readQuery({
+      const {findTeam} = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: { teamCode, date: todaysDateISO }
+        variables: {teamCode, date: todaysDateISO},
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: { teamCode, date: todaysDateISO },
+        variables: {teamCode, date: todaysDateISO},
         data: {
           findTeam: {
             ...findTeam,
-            todaysStandup
-          }
-        }
+            todaysStandup,
+          },
+        },
       });
-    }
+    },
   });
 
   const [addLinkM] = useMutation(ADD_LINK_GQL, {
@@ -212,18 +208,18 @@ export default ({ match }) => {
       cache,
       {
         data: {
-          addLink: { link }
-        }
-      }
+          addLink: {link},
+        },
+      },
     ) {
-      const { findTeam } = cache.readQuery({
+      const {findTeam} = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: { teamCode, date: todaysDateISO }
+        variables: {teamCode, date: todaysDateISO},
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: { teamCode, date: todaysDateISO },
+        variables: {teamCode, date: todaysDateISO},
         data: {
           findTeam: {
             ...findTeam,
@@ -231,13 +227,13 @@ export default ({ match }) => {
               ...findTeam.settings,
               links: {
                 ...(findTeam.settings.links || {}),
-                ...link
-              }
-            }
-          }
-        }
+                ...link,
+              },
+            },
+          },
+        },
       });
-    }
+    },
   });
 
   const [deleteStandupM] = useMutation(DELETE_STANDUP_GQL);
@@ -247,7 +243,7 @@ export default ({ match }) => {
    */
   const debouncedRefetchAllFacilitators = debounce(
     () => refetchAllFacilitators(),
-    200
+    200,
   );
 
   socket.on(`${teamCode}_standup_created`, () => {
@@ -269,11 +265,11 @@ export default ({ match }) => {
       </Heading>
     );
   } else {
-    const { name, code } = allFacilitatorsRes.findTeam;
+    const {name, code} = allFacilitatorsRes.findTeam;
     // TODO Consolidate this implementation with the one in CreateTeam
     try {
       const recentTeamsBlob = window.localStorage.getItem(
-        LOCAL_STORAGE_RECENT_TEAMS
+        LOCAL_STORAGE_RECENT_TEAMS,
       );
       const recentTeams = recentTeamsBlob ? JSON.parse(recentTeamsBlob) : [];
       const existing = recentTeams.find(t => t.code === code);
@@ -282,16 +278,16 @@ export default ({ match }) => {
           ...recentTeams,
           {
             name,
-            code
-          }
+            code,
+          },
         ];
         window.localStorage.setItem(
           LOCAL_STORAGE_RECENT_TEAMS,
-          JSON.stringify(newRecentTeams)
+          JSON.stringify(newRecentTeams),
         );
       }
     } catch (e) {
-      console.log("Error", e);
+      console.log('Error', e);
     }
   }
 
@@ -299,16 +295,16 @@ export default ({ match }) => {
     return createFacilitatorM({
       variables: {
         name,
-        teamUuid
-      }
+        teamUuid,
+      },
     });
   };
 
   const bumpCurrentFacilitatorIndex = teamUuid => {
     return bumpCurrentFacilitatorIndexM({
       variables: {
-        teamUuid
-      }
+        teamUuid,
+      },
     });
   };
 
@@ -316,8 +312,8 @@ export default ({ match }) => {
     return createStandupM({
       variables: {
         date: todaysDateISO,
-        facilitatorUuid
-      }
+        facilitatorUuid,
+      },
     });
   };
 
@@ -326,8 +322,8 @@ export default ({ match }) => {
       variables: {
         teamUuid,
         name,
-        url
-      }
+        url,
+      },
     });
   };
 
@@ -335,8 +331,8 @@ export default ({ match }) => {
     return deleteStandupM({
       variables: {
         date: todaysDateISO,
-        teamUuid
-      }
+        teamUuid,
+      },
     });
   };
 
@@ -354,26 +350,10 @@ export default ({ match }) => {
     ? allFacilitatorsRes.findTeam.settings.links
     : [];
 
-  function storeUserName() {
-    window.localStorage.setItem("username", userName);
-    setHasUserName(true);
-  }
-
-  if (!hasUserName) {
-    return (
-      <EnterUserNamePrompt
-        userName={userName}
-        setUserName={setUserName}
-        storeUserName={storeUserName}
-      />
-    );
-  }
-
   return (
     <>
       <div className="team-container">
         <TopNav
-          userName={userName}
           code={teamCode}
           setShowEditFacilitators={setShowEditFacilitators}
           setShowEditLinksModal={setShowEditLinksModal}
@@ -386,8 +366,7 @@ export default ({ match }) => {
           padding={majorScale(4)}
           elevation={1}
           display="flex"
-          flexDirection="column"
-        >
+          flexDirection="column">
           <Heading size={600} marginY={majorScale(1)}>
             {team.name}
           </Heading>
