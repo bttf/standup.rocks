@@ -7,7 +7,6 @@ import {
   ListItem,
   majorScale,
   Pane,
-  Text,
   TextInputField,
   UnorderedList,
 } from 'evergreen-ui';
