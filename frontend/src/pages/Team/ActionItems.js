@@ -25,16 +25,25 @@ export default ({actionItems, createActionItem, disabled, standup}) => {
             createActionItem(standup.uuid, actionItem);
             setActionItem('');
           }}>
-          <Tooltip content="You'll need to confirm the facilitator first">
-            <Pane>
-              <TextInput
-                marginBottom={majorScale(1)}
-                disabled={disabled}
-                value={actionItem}
-                onChange={e => setActionItem(e.target.value)}
-              />
-            </Pane>
-          </Tooltip>
+          {!standup ? (
+            <Tooltip content="You'll need to confirm the facilitator first">
+              <Pane>
+                <TextInput
+                  marginBottom={majorScale(1)}
+                  disabled={disabled}
+                  value={actionItem}
+                  onChange={e => setActionItem(e.target.value)}
+                />
+              </Pane>
+            </Tooltip>
+          ) : (
+            <TextInput
+              marginBottom={majorScale(1)}
+              disabled={disabled}
+              value={actionItem}
+              onChange={e => setActionItem(e.target.value)}
+            />
+          )}
         </form>
       </Pane>
       <Pane>

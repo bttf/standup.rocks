@@ -46,9 +46,11 @@ export default ({
         {isFacilitatorConfirmed
           ? 'Facilitating today is:'
           : 'Who is facilitating today?'}{' '}
-        <Paragraph muted>
-          <Small>Once confirmed, facilitator will rotate the next day</Small>
-        </Paragraph>
+        {!isFacilitatorConfirmed && (
+          <Paragraph muted>
+            <Small>Once confirmed, facilitator will rotate the next day</Small>
+          </Paragraph>
+        )}
       </Heading>
 
       <Pane display="flex" alignItems="center">
