@@ -337,6 +337,14 @@ export default ({match}) => {
     debouncedRefetchAllFacilitators();
   });
 
+  if (allFacilitatorsLoading) {
+    return (
+      <Heading size={900} margin={majorScale(4)}>
+        Loading
+      </Heading>
+    );
+  }
+
   if (!allFacilitatorsRes || !allFacilitatorsRes.findTeam) {
     return (
       <Heading size={900} margin={majorScale(4)}>
