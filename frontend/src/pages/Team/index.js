@@ -457,7 +457,7 @@ export default ({match}) => {
 
   return (
     <>
-      <div className="team-container">
+      <Pane height="100%" width="100%" display="flex" flexDirection="column">
         <TopNav
           code={teamCode}
           setShowEditFacilitators={setShowEditFacilitators}
@@ -472,7 +472,7 @@ export default ({match}) => {
           elevation={1}
           display="flex"
           flexDirection="column">
-          <Pane display="flex" marginY={majorScale(2)}>
+          <Pane display="flex">
             <Pane flex="1">
               <Heading size={600} marginY={majorScale(1)}>
                 {team.name}
@@ -510,7 +510,7 @@ export default ({match}) => {
         <Pane width={CONTENT_WIDTH} marginX="auto" marginY={majorScale(2)}>
           <PrevStandups standups={standups} />
         </Pane>
-      </div>
+      </Pane>
 
       <EditFacilitatorsModal
         facilitators={facilitators}

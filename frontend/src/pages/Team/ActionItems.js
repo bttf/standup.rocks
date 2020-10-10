@@ -5,6 +5,7 @@ import {
   majorScale,
   Pane,
   TextInput,
+  Tooltip,
   UnorderedList,
 } from 'evergreen-ui';
 
@@ -24,12 +25,16 @@ export default ({actionItems, createActionItem, disabled, standup}) => {
             createActionItem(standup.uuid, actionItem);
             setActionItem('');
           }}>
-          <TextInput
-            marginBottom={majorScale(1)}
-            disabled={disabled}
-            value={actionItem}
-            onChange={e => setActionItem(e.target.value)}
-          />
+          <Tooltip content="You'll need to confirm the facilitator first">
+            <Pane>
+              <TextInput
+                marginBottom={majorScale(1)}
+                disabled={disabled}
+                value={actionItem}
+                onChange={e => setActionItem(e.target.value)}
+              />
+            </Pane>
+          </Tooltip>
         </form>
       </Pane>
       <Pane>

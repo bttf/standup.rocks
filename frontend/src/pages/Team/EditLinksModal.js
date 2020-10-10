@@ -35,8 +35,8 @@ export default function EditLinksModal({
       onCloseComplete={() => setShowEditLinksModal(false)}>
       {Object.keys(links).length > 0 && (
         <UnorderedList>
-          {Object.keys(links).map(name => (
-            <ListItem display="flex" justifyContent="space-between">
+          {Object.keys(links).map((name, i) => (
+            <ListItem key={i} display="flex" justifyContent="space-between">
               <Link href={links[name]}>{name}</Link>
               <CrossIcon
                 color="danger"
