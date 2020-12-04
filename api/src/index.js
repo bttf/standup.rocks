@@ -6,7 +6,7 @@ import serve from 'koa-static';
 import socketio from 'socket.io';
 import graphqlServer from './graphql/server';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.STANDUP_ROCKS_PORT || 3000;
 const app = new Koa();
 const router = new Router();
 

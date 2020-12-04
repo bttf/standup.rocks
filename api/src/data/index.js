@@ -4,16 +4,16 @@ import Sequelize from "sequelize";
 
 const {
   NODE_ENV,
-  PGDATABASE,
-  PGUSER,
-  PGPASSWORD,
-  PGHOST,
-  PGPORT
+  STANDUP_ROCKS_PGDATABASE,
+  STANDUP_ROCKS_PGUSER,
+  STANDUP_ROCKS_PGPASSWORD,
+  STANDUP_ROCKS_PGHOST,
+  STANDUP_ROCKS_PGPORT
 } = process.env;
 
-const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
-  host: PGHOST,
-  port: PGPORT,
+const sequelize = new Sequelize(STANDUP_ROCKS_PGDATABASE, STANDUP_ROCKS_PGUSER, STANDUP_ROCKS_PGPASSWORD, {
+  host: STANDUP_ROCKS_PGHOST,
+  port: STANDUP_ROCKS_PGPORT,
   dialect: "postgres",
   dialectOptions: {
     ssl:

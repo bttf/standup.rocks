@@ -1,11 +1,11 @@
 {
   "development": {
     "driver": "pg",
-    "host": {"ENV": "PGHOST"},
-    "user": {"ENV": "PGUSER"},
-    "password": {"ENV": "PGPASSWORD"},
-    "database": {"ENV": "PGDATABASE"},
-    "port": {"ENV": "PGPORT"},
+    "host": {"ENV": "STANDUP_ROCKS_PGHOST"},
+    "user": {"ENV": "STANDUP_ROCKS_PGUSER"},
+    "password": {"ENV": "STANDUP_ROCKS_PGPASSWORD"},
+    "database": {"ENV": "STANDUP_ROCKS_PGDATABASE"},
+    "port": {"ENV": "STANDUP_ROCKS_PGPORT"},
     "native": true
   }
 }

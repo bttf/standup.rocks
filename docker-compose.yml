@@ -13,12 +13,12 @@ services:
       - db
     environment:
       NODE_ENV: development
-      PORT: 3000
-      PGHOST: db
-      PGUSER: postgres
-      PGDATABASE: standup
-      PGPASSWORD: standup
-      PGPORT: "5432"
+      STANDUP_ROCKS_PORT: 3000
+      STANDUP_ROCKS_PGHOST: db
+      STANDUP_ROCKS_PGUSER: postgres
+      STANDUP_ROCKS_PGDATABASE: standup
+      STANDUP_ROCKS_PGPASSWORD: standup
+      STANDUP_ROCKS_PGPORT: "5432"
   db:
     image: postgres
     environment:

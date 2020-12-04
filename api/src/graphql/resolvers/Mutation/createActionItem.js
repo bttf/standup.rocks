@@ -12,8 +12,6 @@ async function createActionItemMutation(_, args, context) {
     standup_id: standup.id,
   });
 
-  console.log('DEBUG actionItem', actionItem);
-
   return {actionItem};
 }
 
