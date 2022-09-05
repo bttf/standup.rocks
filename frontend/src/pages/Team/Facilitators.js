@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   BanCircleIcon,
   Button,
@@ -11,7 +11,7 @@ import {
   Spinner,
   TickCircleIcon,
   UndoIcon,
-} from 'evergreen-ui';
+} from "evergreen-ui";
 
 export default ({
   todaysStandup,
@@ -32,11 +32,11 @@ export default ({
 
   if (facilitators.length < 1) {
     return (
-      <>
+      <Pane>
         <Button onClick={() => setShowEditFacilitators(true)}>
-          Set a list of facilitators
+          Add team members
         </Button>
-      </>
+      </Pane>
     );
   }
 
@@ -44,8 +44,8 @@ export default ({
     <Pane marginY={majorScale(3)}>
       <Heading size={600} marginY={majorScale(1)}>
         {isFacilitatorConfirmed
-          ? 'Facilitating today is:'
-          : 'Who is facilitating today?'}{' '}
+          ? "Facilitating today is:"
+          : "Who is facilitating today?"}{" "}
         {!isFacilitatorConfirmed && (
           <Paragraph muted>
             <Small>Once confirmed, facilitator will rotate the next day</Small>
@@ -89,7 +89,7 @@ export default ({
       {facilitators.length > 1 && (
         <>
           <Heading size={400} marginY={majorScale(1)}>
-            Up next:{' '}
+            Up next:{" "}
             {isFacilitatorConfirmed
               ? upNextFacilitator.name
               : facilitators[1].name}

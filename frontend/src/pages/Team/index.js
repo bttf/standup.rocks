@@ -1,157 +1,37 @@
-import React, {useState} from 'react';
-import {debounce} from 'lodash';
-import {useQuery, useMutation} from '@apollo/react-hooks';
-import {gql} from 'apollo-boost';
-import {Heading, majorScale, Pane} from 'evergreen-ui';
-import {formatISO} from 'date-fns';
-import {LOCAL_STORAGE_RECENT_TEAMS} from '../../lib/constants';
-import socket from '../../lib/socket';
-import TopNav from './TopNav';
-import Clock from './Clock';
-import Facilitators from './Facilitators';
-import Links from './Links';
-import EditFacilitatorsModal from './EditFacilitatorsModal';
-import EditLinksModal from './EditLinksModal';
-import PrevStandups from './PrevStandups';
-import ActionItems from './ActionItems';
-import './Team.css';
+import React, { useState } from "react";
+import { debounce } from "lodash";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { Heading, majorScale, Pane } from "evergreen-ui";
+import { formatISO } from "date-fns";
+import { LOCAL_STORAGE_RECENT_TEAMS } from "../../lib/constants";
+import {
+  ALL_FACILITATORS_GQL,
+  CREATE_FACILITATOR_GQL,
+  BUMP_CURRENT_FACILITATOR_INDEX_GQL,
+  CREATE_STANDUP_GQL,
+  ADD_LINK_GQL,
+  DELETE_STANDUP_GQL,
+  DELETE_FACILITATOR_GQL,
+  DELETE_LINK_GQL,
+  CREATE_ACTION_ITEM_GQL,
+} from "../../lib/graphql";
 
-const CONTENT_WIDTH = '800px';
+import socket from "../../lib/socket";
+import TopNav from "./TopNav";
+import Clock from "./Clock";
+import Facilitators from "./Facilitators";
+import Links from "./Links";
+import EditFacilitatorsModal from "./EditFacilitatorsModal";
+import EditLinksModal from "./EditLinksModal";
+import PrevStandups from "./PrevStandups";
+import ActionItems from "./ActionItems";
+import "./Team.css";
 
-const ALL_FACILITATORS_GQL = gql`
-  query AllFacilitators($teamCode: String!, $date: String!) {
-    findTeam(code: $teamCode) {
-      uuid
-      name
-      code
-      facilitators {
-        uuid
-        name
-      }
-      settings {
-        links
-      }
-      todaysStandup: standupOnDate(date: $date) {
-        uuid
-        facilitator {
-          name
-        }
-        upNext {
-          name
-        }
-        actionItems {
-          text
-        }
-      }
-      standups {
-        uuid
-        runDate
-        facilitator {
-          name
-        }
-        actionItems {
-          text
-        }
-      }
-    }
-  }
-`;
+const CONTENT_WIDTH = "800px";
 
-const CREATE_FACILITATOR_GQL = gql`
-  mutation CreateFacilitator($name: String!, $teamUuid: String!) {
-    createFacilitator(name: $name, teamUuid: $teamUuid) {
-      createdFacilitator {
-        uuid
-        name
-        index
-      }
-      errors
-    }
-  }
-`;
-
-const BUMP_CURRENT_FACILITATOR_INDEX_GQL = gql`
-  mutation BumpCurrentFacilitatorIndex($teamUuid: String!) {
-    bumpCurrentFacilitatorIndex(teamUuid: $teamUuid) {
-      team {
-        facilitators {
-          uuid
-          name
-        }
-      }
-    }
-  }
-`;
-
-const CREATE_STANDUP_GQL = gql`
-  mutation CreateStandup($date: String!, $facilitatorUuid: String!) {
-    createStandup(date: $date, facilitatorUuid: $facilitatorUuid) {
-      createdStandup {
-        facilitator {
-          name
-        }
-        upNext {
-          name
-        }
-      }
-      errors
-    }
-  }
-`;
-
-const ADD_LINK_GQL = gql`
-  mutation AddLink($teamUuid: String!, $name: String!, $url: String!) {
-    addLink(teamUuid: $teamUuid, name: $name, url: $url) {
-      link
-      errors
-    }
-  }
-`;
-
-const DELETE_STANDUP_GQL = gql`
-  mutation DeleteStandup($teamUuid: String!, $date: String!) {
-    deleteStandup(teamUuid: $teamUuid, date: $date) {
-      errors
-    }
-  }
-`;
-
-const DELETE_FACILITATOR_GQL = gql`
-  mutation DeleteFacilitator($uuid: String!) {
-    deleteFacilitator(uuid: $uuid) {
-      deletedFacilitator {
-        name
-      }
-      errors
-    }
-  }
-`;
-
-const DELETE_LINK_GQL = gql`
-  mutation DeleteLink($teamUuid: String!, $name: String!) {
-    deleteLink(teamUuid: $teamUuid, name: $name) {
-      errors
-    }
-  }
-`;
-
-const CREATE_ACTION_ITEM_GQL = gql`
-  mutation CreateActionItem($text: String!, $standupUuid: String!) {
-    createActionItem(text: $text, standupUuid: $standupUuid) {
-      actionItem {
-        text
-      }
-      errors
-    }
-  }
-`;
-
-/**
- * Reminder: All state needs to be contained in THIS component.
- */
-export default ({match}) => {
-  const todaysDateISO = formatISO(new Date(), {representation: 'date'});
-  const {teamCode} = match.params;
+export default ({ match }) => {
+  const todaysDateISO = formatISO(new Date(), { representation: "date" });
+  const { teamCode } = match.params;
   const [showEditFacilitators, setShowEditFacilitators] = useState(false);
   const [showEditLinksModal, setShowEditLinksModal] = useState(false);
   const {
@@ -159,7 +39,7 @@ export default ({match}) => {
     loading: allFacilitatorsLoading,
     refetch: refetchAllFacilitators,
   } = useQuery(ALL_FACILITATORS_GQL, {
-    variables: {teamCode, date: todaysDateISO},
+    variables: { teamCode, date: todaysDateISO },
   });
 
   const [createFacilitatorM] = useMutation(CREATE_FACILITATOR_GQL, {
@@ -167,18 +47,18 @@ export default ({match}) => {
       cache,
       {
         data: {
-          createFacilitator: {createdFacilitator: facilitator},
+          createFacilitator: { createdFacilitator: facilitator },
         },
-      },
+      }
     ) {
-      const {findTeam} = cache.readQuery({
+      const { findTeam } = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
         data: {
           findTeam: {
             ...findTeam,
@@ -197,19 +77,19 @@ export default ({match}) => {
         {
           data: {
             bumpCurrentFacilitatorIndex: {
-              team: {facilitators},
+              team: { facilitators },
             },
           },
-        },
+        }
       ) {
-        const {findTeam} = cache.readQuery({
+        const { findTeam } = cache.readQuery({
           query: ALL_FACILITATORS_GQL,
-          variables: {teamCode, date: todaysDateISO},
+          variables: { teamCode, date: todaysDateISO },
         });
 
         cache.writeQuery({
           query: ALL_FACILITATORS_GQL,
-          variables: {teamCode, date: todaysDateISO},
+          variables: { teamCode, date: todaysDateISO },
           data: {
             findTeam: {
               ...findTeam,
@@ -218,7 +98,7 @@ export default ({match}) => {
           },
         });
       },
-    },
+    }
   );
 
   const [createStandupM] = useMutation(CREATE_STANDUP_GQL, {
@@ -226,18 +106,18 @@ export default ({match}) => {
       cache,
       {
         data: {
-          createStandup: {createdStandup: todaysStandup},
+          createStandup: { createdStandup: todaysStandup },
         },
-      },
+      }
     ) {
-      const {findTeam} = cache.readQuery({
+      const { findTeam } = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
         data: {
           findTeam: {
             ...findTeam,
@@ -253,18 +133,18 @@ export default ({match}) => {
       cache,
       {
         data: {
-          addLink: {link},
+          addLink: { link },
         },
-      },
+      }
     ) {
-      const {findTeam} = cache.readQuery({
+      const { findTeam } = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
         data: {
           findTeam: {
             ...findTeam,
@@ -292,18 +172,18 @@ export default ({match}) => {
       cache,
       {
         data: {
-          createActionItem: {actionItem},
+          createActionItem: { actionItem },
         },
-      },
+      }
     ) {
-      const {findTeam} = cache.readQuery({
+      const { findTeam } = cache.readQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
       });
 
       cache.writeQuery({
         query: ALL_FACILITATORS_GQL,
-        variables: {teamCode, date: todaysDateISO},
+        variables: { teamCode, date: todaysDateISO },
         data: {
           findTeam: {
             ...findTeam,
@@ -322,7 +202,7 @@ export default ({match}) => {
    */
   const debouncedRefetchAllFacilitators = debounce(
     () => refetchAllFacilitators(),
-    200,
+    200
   );
 
   socket.on(`${teamCode}_standup_created`, () => {
@@ -352,14 +232,13 @@ export default ({match}) => {
       </Heading>
     );
   } else {
-    const {name, code} = allFacilitatorsRes.findTeam;
-    // TODO Consolidate this implementation with the one in CreateTeam
+    const { name, code } = allFacilitatorsRes.findTeam;
     try {
       const recentTeamsBlob = window.localStorage.getItem(
-        LOCAL_STORAGE_RECENT_TEAMS,
+        LOCAL_STORAGE_RECENT_TEAMS
       );
       const recentTeams = recentTeamsBlob ? JSON.parse(recentTeamsBlob) : [];
-      const existing = recentTeams.find(t => t.code === code);
+      const existing = recentTeams.find((t) => t.code === code);
       if (!existing) {
         const newRecentTeams = [
           ...recentTeams,
@@ -370,11 +249,11 @@ export default ({match}) => {
         ];
         window.localStorage.setItem(
           LOCAL_STORAGE_RECENT_TEAMS,
-          JSON.stringify(newRecentTeams),
+          JSON.stringify(newRecentTeams)
         );
       }
     } catch (e) {
-      console.log('Error', e);
+      console.log("Error", e);
     }
   }
 
@@ -387,7 +266,7 @@ export default ({match}) => {
     });
   };
 
-  const bumpCurrentFacilitatorIndex = teamUuid => {
+  const bumpCurrentFacilitatorIndex = (teamUuid) => {
     return bumpCurrentFacilitatorIndexM({
       variables: {
         teamUuid,
@@ -395,7 +274,7 @@ export default ({match}) => {
     });
   };
 
-  const createStandup = facilitatorUuid => {
+  const createStandup = (facilitatorUuid) => {
     return createStandupM({
       variables: {
         date: todaysDateISO,
@@ -414,7 +293,7 @@ export default ({match}) => {
     });
   };
 
-  const deleteStandup = teamUuid => {
+  const deleteStandup = (teamUuid) => {
     return deleteStandupM({
       variables: {
         date: todaysDateISO,
@@ -423,23 +302,23 @@ export default ({match}) => {
     });
   };
 
-  const deleteFacilitator = async uuid => {
+  const deleteFacilitator = async (uuid) => {
     await deleteFacilitatorM({
-      variables: {uuid},
+      variables: { uuid },
     });
     refetchAllFacilitators();
   };
 
   const deleteLink = async (teamUuid, name) => {
     await deleteLinkM({
-      variables: {teamUuid, name},
+      variables: { teamUuid, name },
     });
     refetchAllFacilitators();
   };
 
   const createActionItem = async (standupUuid, text) => {
     await createActionItemM({
-      variables: {standupUuid, text},
+      variables: { standupUuid, text },
     });
   };
 
@@ -458,7 +337,7 @@ export default ({match}) => {
     : [];
   const standups = allFacilitatorsRes
     ? (allFacilitatorsRes.findTeam.standups || []).filter(
-        s => s.runDate !== todaysDateISO,
+        (s) => s.runDate !== todaysDateISO
       )
     : [];
   const actionItems = todaysStandup ? todaysStandup.actionItems : [];
@@ -479,25 +358,41 @@ export default ({match}) => {
           padding={majorScale(4)}
           elevation={1}
           display="flex"
-          flexDirection="column">
+          flexDirection="column"
+        >
           <Pane display="flex">
             <Pane flex="1">
               <Heading size={600} marginY={majorScale(1)}>
                 {team.name}
               </Heading>
+
               <Clock />
-              <Facilitators
-                isLoading={allFacilitatorsLoading}
-                absentees={absentees}
-                facilitators={facilitators}
-                setShowEditFacilitators={setShowEditFacilitators}
-                todaysStandup={todaysStandup}
-                bumpCurrentFacilitatorIndex={() =>
-                  bumpCurrentFacilitatorIndex(team.uuid)
-                }
-                createStandup={createStandup}
-                deleteStandup={() => deleteStandup(team.uuid)}
-              />
+
+              <Pane marginY={majorScale(2)}>
+                {facilitators.length < 1 && (
+                  <Heading size={600} marginBottom={majorScale(2)}>
+                    Step 1: Add members of your team roster
+                  </Heading>
+                )}
+                <Facilitators
+                  isLoading={allFacilitatorsLoading}
+                  absentees={absentees}
+                  facilitators={facilitators}
+                  setShowEditFacilitators={setShowEditFacilitators}
+                  todaysStandup={todaysStandup}
+                  bumpCurrentFacilitatorIndex={() =>
+                    bumpCurrentFacilitatorIndex(team.uuid)
+                  }
+                  createStandup={createStandup}
+                  deleteStandup={() => deleteStandup(team.uuid)}
+                />
+              </Pane>
+
+              {facilitators.length < 1 && (
+                <Heading size={600} marginBottom={majorScale(2)}>
+                  Step 2: Save links to sprint board, zoom call, for easy access
+                </Heading>
+              )}
               <Pane marginTop={majorScale(2)}>
                 <Links
                   links={links}
@@ -522,8 +417,8 @@ export default ({match}) => {
 
       <EditFacilitatorsModal
         facilitators={facilitators}
-        createFacilitator={name => createFacilitator(name, team.uuid)}
-        deleteFacilitator={uuid => deleteFacilitator(uuid)}
+        createFacilitator={(name) => createFacilitator(name, team.uuid)}
+        deleteFacilitator={(uuid) => deleteFacilitator(uuid)}
         showEditFacilitators={showEditFacilitators}
         setShowEditFacilitators={setShowEditFacilitators}
       />
@@ -531,7 +426,7 @@ export default ({match}) => {
       <EditLinksModal
         links={links}
         createLink={(name, url) => addLink(team.uuid, name, url)}
-        deleteLink={name => deleteLink(team.uuid, name)}
+        deleteLink={(name) => deleteLink(team.uuid, name)}
         showEditLinksModal={showEditLinksModal}
         setShowEditLinksModal={setShowEditLinksModal}
       />

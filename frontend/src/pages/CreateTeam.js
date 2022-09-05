@@ -181,7 +181,11 @@ export default () => {
       {!!recentTeams.length && <RecentTeamsPanel recentTeams={recentTeams} />}
       <div>
         © 2022{" "}
-        <a href="https://redpine.software" target="_blank" rel="noreferrer">
+        <a
+          href="https://redpine.software"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Red Pine Software
         </a>
       </div>
